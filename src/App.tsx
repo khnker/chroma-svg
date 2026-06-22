@@ -38,28 +38,6 @@ const TAB_ICONS: Record<Tab, string> = {
   previews: 'M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z',
 }
 
-const DEFAULT_THEME = {}
-
-function generateSiteTheme(paletteColors: string[]): Record<string, string> {
-  const base = paletteColors[0]
-  if (!base) return {}
-  const scale = generateColorScale(base)
-  if (!scale) return {}
-  return {
-    '--color-primary-50': scale['50'],
-    '--color-primary-100': scale['100'],
-    '--color-primary-200': scale['200'],
-    '--color-primary-300': scale['300'],
-    '--color-primary-400': scale['400'],
-    '--color-primary-500': scale['500'],
-    '--color-primary-600': scale['600'],
-    '--color-primary-700': scale['700'],
-    '--color-primary-800': scale['800'],
-    '--color-primary-900': scale['900'],
-    '--color-primary-950': scale['950'],
-  }
-}
-
 export default function App() {
   // ── Storage & URL ──
   const { initialSvgs, initialColorMap, persist, clearSession } = useStorage()
@@ -92,8 +70,27 @@ export default function App() {
   const { previewSvg } = usePreview(activeSvg?.raw ?? null, previewColorMap)
   const galleries = usePaletteGallery(activeSvg?.raw ?? null, colors, contrastMap)
 
-  // ── Site theme ──
-  const [siteTheme, setSiteTheme] = useState<Record<string, string>>(DEFAULT_THEME)
+  // ── Site theme (reactivo: sigue colorMap + homogenize) ──
+  const siteTheme = useMemo(() => {
+    if (colors.length === 0) return {}
+    const sorted = [...colors].sort((a, b) => b.elementCount - a.elementCount)
+    const dominant = previewColorMap[sorted[0].original] ?? sorted[0].normalized
+    const scale = generateColorScale(dominant)
+    if (!scale) return {}
+    return {
+      '--color-primary-50': scale['50'],
+      '--color-primary-100': scale['100'],
+      '--color-primary-200': scale['200'],
+      '--color-primary-300': scale['300'],
+      '--color-primary-400': scale['400'],
+      '--color-primary-500': scale['500'],
+      '--color-primary-600': scale['600'],
+      '--color-primary-700': scale['700'],
+      '--color-primary-800': scale['800'],
+      '--color-primary-900': scale['900'],
+      '--color-primary-950': scale['950'],
+    }
+  }, [previewColorMap, colors])
 
   // ── Persist ──
   useEffect(() => {
@@ -122,7 +119,6 @@ export default function App() {
     setLastAppliedPalette(null)
     setLastAppliedPaletteName(null)
     setPaletteRotation(0)
-    setSiteTheme(DEFAULT_THEME)
   }, [activeSvg?.id])
 
   // ── Handlers ──
@@ -169,7 +165,6 @@ export default function App() {
     setPaletteRotation(prev => prev + 1)
     setHomogenizeFactor(0)
     applyPalette(entries)
-    setSiteTheme(generateSiteTheme(filtered))
   }, [colors, applyPalette, paletteRotation])
 
   const handleReset = () => {
@@ -178,7 +173,6 @@ export default function App() {
     setLastAppliedPalette(null)
     setLastAppliedPaletteName(null)
     setHomogenizeFactor(0)
-    setSiteTheme(DEFAULT_THEME)
     resetAll()
   }
 
