@@ -2,6 +2,7 @@
   <img src="public/logo-readme.svg" width="100" alt="Chroma logo"/>
   <h1>Chroma — SVG Color Studio</h1>
   <p>A web-based tool to recolor SVGs visually</p>
+  <p><a href="https://chroma-svg.pages.dev/" target="_blank">https://chroma-svg.pages.dev/</a></p>
 
   <p>
     <img src="https://img.shields.io/badge/React-19-58C4DC?logo=react&logoColor=white" alt="React 19"/>
