@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { applyColorMap } from '@/core/color-replacer'
 import { generateHarmonies } from '@/lib/color-theory'
 import { predefinedPalettes } from '@/lib/palette-data'
-import type { ColorEntry, ContrastMap } from '@/core/types'
+import type { ColorEntry, ContrastMap, PaletaCustom } from '@/core/types'
 import { bestMapping } from '@/lib/contrast-map'
 
 export interface PaletteGalleryItem {
@@ -14,7 +14,7 @@ export interface PaletteGalleryItem {
   previewSvg: string | null
 }
 
-export function usePaletteGallery(rawSvg: string | null, colors: ColorEntry[], contrastMap: ContrastMap): PaletteGalleryItem[] {
+export function usePaletteGallery(rawSvg: string | null, colors: ColorEntry[], contrastMap: ContrastMap, customPalettes: PaletaCustom[] = []): PaletteGalleryItem[] {
   return useMemo(() => {
     if (!rawSvg || colors.length === 0) return []
 
@@ -60,8 +60,25 @@ export function usePaletteGallery(rawSvg: string | null, colors: ColorEntry[], c
       }
     }
 
+    for (const cp of customPalettes) {
+      const paletteColors = cp.colors.slice(0, MAX_SVG_COLORS)
+      const orderedPalette = bestMapping(svgColors, paletteColors, contrastMap)
+      const colorMap: Record<string, string> = {}
+      for (let i = 0; i < svgColors.length; i++) {
+        colorMap[svgColors[i].original] = orderedPalette[i % orderedPalette.length]
+      }
+      items.push({
+        id: `custom-${cp.name}`,
+        name: cp.name,
+        category: 'From Image',
+        description: `${cp.colors.length} colors`,
+        paletteColors,
+        previewSvg: applyColorMap(rawSvg, colorMap),
+      })
+    }
+
     return items
-  }, [rawSvg, colors, contrastMap])
+  }, [rawSvg, colors, contrastMap, customPalettes])
 }
 
 const MAX_SVG_COLORS = 5

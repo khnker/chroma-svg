@@ -91,7 +91,7 @@ async function extractImagePalette(file: File, onPalette: (colors: string[], fil
   img.src = url
 }
 
-function extractDominantColors(imageData: ImageData, k = 6): string[] {
+export function extractDominantColors(imageData: ImageData, k = 6): string[] {
   const data = imageData.data
   const pixels: number[][] = []
   for (let y = 0; y < imageData.height; y += 3) {
@@ -109,7 +109,7 @@ function extractDominantColors(imageData: ImageData, k = 6): string[] {
   }
   const counts = new Array(k).fill(0)
   const sums = Array.from({ length: k }, () => [0, 0, 0])
-  const labels = new Array(pixels.length).fill(0)
+  const clusterPixels: number[][][] = Array.from({ length: k }, () => [])
 
   const dist = (a: number[], b: number[]) => {
     const dr = a[0] - b[0], dg = a[1] - b[1], db = a[2] - b[2]
@@ -117,14 +117,14 @@ function extractDominantColors(imageData: ImageData, k = 6): string[] {
   }
 
   for (let iter = 0; iter < 10; iter++) {
-    for (let i = 0; i < k; i++) { sums[i] = [0, 0, 0]; counts[i] = 0 }
+    for (let i = 0; i < k; i++) { sums[i] = [0, 0, 0]; counts[i] = 0; clusterPixels[i] = [] }
     for (let i = 0; i < pixels.length; i++) {
       let best = 0, bestDist = Infinity
       for (let j = 0; j < k; j++) {
         const d = dist(pixels[i], centroids[j])
         if (d < bestDist) { bestDist = d; best = j }
       }
-      labels[i] = best
+      clusterPixels[best].push(pixels[i])
       sums[best][0] += pixels[i][0]
       sums[best][1] += pixels[i][1]
       sums[best][2] += pixels[i][2]
@@ -138,7 +138,14 @@ function extractDominantColors(imageData: ImageData, k = 6): string[] {
   }
 
   return centroids
-    .filter((_, i) => counts[i] > 0)
-    .sort((a, b) => counts[labels.indexOf(b)] - counts[labels.indexOf(a)])
-    .map((c) => '#' + c.map((v) => Math.round(v).toString(16).padStart(2, '0')).join(''))
+    .map((c, i) => {
+      if (clusterPixels[i].length === 0) return null
+      const nearest = clusterPixels[i].reduce((best, px) =>
+        dist(px, c) < dist(best, c) ? px : best
+      )
+      return { c: nearest, count: counts[i] }
+    })
+    .filter((x): x is { c: number[]; count: number } => x !== null)
+    .sort((a, b) => b.count - a.count)
+    .map(x => '#' + x.c.map((v) => v.toString(16).padStart(2, '0')).join(''))
 }

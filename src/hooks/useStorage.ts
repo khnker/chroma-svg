@@ -45,7 +45,7 @@ export function useStorage() {
     return -1
   })
 
-  const timerRef = useRef<ReturnType<typeof setTimeout>>()
+  const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
 
   const persist = useCallback((svgs: SvgEntry[], colorMap: ColorMap, activeIndex: number) => {
     if (timerRef.current) clearTimeout(timerRef.current)

@@ -21,7 +21,7 @@ export function useUrlState() {
     }
   })()
 
-  const timerRef = useRef<ReturnType<typeof setTimeout>>()
+  const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
 
   const pushState = useCallback((raw: string, fileName: string, colorMap: ColorMap) => {
     if (timerRef.current) clearTimeout(timerRef.current)

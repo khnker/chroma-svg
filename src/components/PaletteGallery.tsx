@@ -22,7 +22,6 @@ export function PaletteGallery({ galleries, onApplyPalette, selectedPalette }: P
     const clientHeight = el.clientHeight
     const rowHeight = CARD_HEIGHT + 12
     const totalRows = Math.ceil(galleries.length / COLUMNS)
-    const visibleRows = Math.ceil(clientHeight / rowHeight)
     const startRow = Math.max(0, Math.floor(scrollTop / rowHeight) - BUFFER_ROWS)
     const endRow = Math.min(totalRows, Math.ceil((scrollTop + clientHeight) / rowHeight) + BUFFER_ROWS)
     setVisibleRange({ start: startRow * COLUMNS, end: Math.min(galleries.length, endRow * COLUMNS) })

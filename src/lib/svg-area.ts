@@ -11,7 +11,6 @@ function estimatePathArea(d: string): number {
   const cmds = d.match(/[MmLlHhVvCcQqAaZz][^MmLlHhVvCcQqAaZz]*/g) || []
   let total = 0
   let cx = 0, cy = 0
-  let startX = 0, startY = 0
   let firstX = 0, firstY = 0
   const points: [number, number][] = []
 
@@ -25,7 +24,6 @@ function estimatePathArea(d: string): number {
       points.length = 0
       if (op === 'M') { cx = args[0]; cy = args[1] }
       else { cx += args[0]; cy += args[1] }
-      startX = cx; startY = cy
       firstX = cx; firstY = cy
       points.push([cx, cy])
     } else if (op === 'L' || op === 'l') {

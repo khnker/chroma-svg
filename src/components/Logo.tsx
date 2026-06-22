@@ -1,21 +1,19 @@
 export function Logo({ size = 32 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="3" y="3" width="26" height="26" rx="7" stroke="url(--lg)" strokeWidth="1.2" opacity="0.3"/>
+      <path d="M10 20l4-10 2 5 2-3 4 8H10z" fill="url(--lg)" opacity="0.7"/>
+      <circle cx="10" cy="26" r="2" fill="#7C3AED"/>
+      <circle cx="16" cy="26" r="2" fill="#EC4899"/>
+      <circle cx="22" cy="26" r="2" fill="#F59E0B"/>
       <defs>
-        <linearGradient id="lgs" x1="4" y1="28" x2="28" y2="4">
-          <stop offset="0%" stopColor="#A78BFA" />
-          <stop offset="35%" stopColor="#7C3AED" />
-          <stop offset="65%" stopColor="#EC4899" />
-          <stop offset="100%" stopColor="#F59E0B" />
+        <linearGradient id="--lg" x1="6" y1="26" x2="26" y2="6">
+          <stop offset="0%" stopColor="#A78BFA"/>
+          <stop offset="35%" stopColor="#7C3AED"/>
+          <stop offset="65%" stopColor="#EC4899"/>
+          <stop offset="100%" stopColor="#F59E0B"/>
         </linearGradient>
       </defs>
-      <rect x="2" y="2" width="28" height="28" rx="6" fill="url(#lgs)" opacity="0.12" />
-      <circle cx="12" cy="13" r="5" fill="currentColor" opacity="0.3" className="text-primary-400" />
-      <circle cx="20" cy="13" r="5" fill="currentColor" opacity="0.3" className="text-primary-400" />
-      <circle cx="16" cy="21" r="5" fill="currentColor" opacity="0.3" className="text-primary-400" />
-      <circle cx="12.5" cy="14" r="3" fill="currentColor" className="text-primary-400" />
-      <circle cx="19.5" cy="14" r="3" fill="currentColor" className="text-accent-400" />
-      <circle cx="16" cy="20" r="3" fill="currentColor" className="text-tertiary-400" />
     </svg>
   )
 }

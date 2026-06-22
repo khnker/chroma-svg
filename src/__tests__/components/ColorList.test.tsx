@@ -5,9 +5,9 @@ import type { ColorEntry } from '@/core/types'
 
 describe('ColorList', () => {
   const colors: ColorEntry[] = [
-    { original: '#ff0000', normalized: '#ff0000', selectors: [{ elementTag: 'rect', attribute: 'fill', cssSelector: 'rect', value: '#ff0000' }], label: 'Red', elementCount: 3 },
-    { original: '#00ff00', normalized: '#00ff00', selectors: [{ elementTag: 'circle', attribute: 'fill', cssSelector: 'circle', value: '#00ff00' }], label: 'Green', elementCount: 2 },
-    { original: '#0000ff', normalized: '#0000ff', selectors: [{ elementTag: 'path', attribute: 'fill', cssSelector: 'path', value: '#0000ff' }], label: 'Blue', elementCount: 1 },
+    { original: '#ff0000', normalized: '#ff0000', selectors: [{ elementTag: 'rect', attribute: 'fill', cssSelector: 'rect', value: '#ff0000' }], label: 'Red', elementCount: 3, areaWeight: 0 },
+    { original: '#00ff00', normalized: '#00ff00', selectors: [{ elementTag: 'circle', attribute: 'fill', cssSelector: 'circle', value: '#00ff00' }], label: 'Green', elementCount: 2, areaWeight: 0 },
+    { original: '#0000ff', normalized: '#0000ff', selectors: [{ elementTag: 'path', attribute: 'fill', cssSelector: 'path', value: '#0000ff' }], label: 'Blue', elementCount: 1, areaWeight: 0 },
   ]
   const colorMap: Record<string, string> = {}
 

@@ -73,3 +73,8 @@ export interface ContrastWarning {
   newRatio: number
   severity: 'low' | 'medium' | 'high'
 }
+
+export interface PaletaCustom {
+  name: string
+  colors: string[]
+}

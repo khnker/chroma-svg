@@ -28,7 +28,6 @@ const COMMON_COLORS: Record<string, string> = {
   '#98fb98': 'Pâle',
   '#7fffd4': 'Aqua',
   '#ffd700': 'Or',
-  '#c0c0c0': 'Gris',
   '#cd5c5c': 'Indien',
   '#f08080': 'Corail',
   '#e0ffff': 'Ciel',
@@ -174,12 +173,34 @@ function hashCode(s: string): number {
   return Math.abs(hash)
 }
 
+export function generateFilenameFromColors(
+  colorMap: Record<string, string>,
+  paletteName?: string | null,
+  maxLen = 40
+): string {
+  const colors = Object.values(colorMap).filter(Boolean)
+  if (colors.length === 0) return 'palette'
+
+  const names = colors.slice(0, 3).map(c => hexToName(c))
+  let base = names.join('-')
+
+  if (paletteName) {
+    const slug = paletteName.replace(/[^a-zA-Z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '').toLowerCase()
+    base = `${slug}-${base}`
+  }
+
+  if (base.length > maxLen) {
+    base = base.slice(0, maxLen).replace(/-+$/, '')
+  }
+
+  return base.toLowerCase().replace(/[^a-z0-9-]/g, '').replace(/-+/g, '-').replace(/^-|-$/g, '')
+}
+
 export function buildNameMatrix(
   colorMap: Record<string, string>,
   paletteName: string | null
 ): Array<{ original: string; replacement: string; name: string }> {
   const entries = Object.entries(colorMap).filter(([, v]) => v)
-  const paletteColors = entries.map(([, v]) => v)
   let roleIdx = 0
 
   return entries.map(([orig, repl]) => {

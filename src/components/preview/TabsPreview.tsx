@@ -1,7 +1,6 @@
 import type { ComponentPreviewProps } from './types'
-import { textColor } from './types'
 
-export function TabsPreview({ primary, secondary }: ComponentPreviewProps) {
+export function TabsPreview({ primary, secondary: _secondary }: ComponentPreviewProps) {
   const tabs = ['Tab A', 'Tab B', 'Tab C']
   return (
     <div className="space-y-3 max-w-md">

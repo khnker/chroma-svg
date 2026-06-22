@@ -1,5 +1,5 @@
-import { useState, useMemo, useEffect, useCallback } from 'react'
-import { SvgUploader } from './components/SvgUploader'
+import { useState, useMemo, useEffect, useCallback, useRef } from 'react'
+import { SvgUploader, extractDominantColors } from './components/SvgUploader'
 import { SvgPreview } from './components/SvgPreview'
 import { SvgTabBar } from './components/SvgTabBar'
 import { ColorList } from './components/ColorList'
@@ -23,7 +23,7 @@ import { isNearBlackOrWhite, generateColorScale } from './lib/color-utils'
 import { homogenizeColorMap } from './lib/homogenize'
 import { HomogenizeSlider } from './components/HomogenizeSlider'
 import { ThemePreview } from './components/ThemePreview'
-import type { ColorEntry, PaletteColor } from './core/types'
+import type { ColorEntry, PaletaCustom } from './core/types'
 
 type Tab = 'palettes' | 'previews'
 type ViewTab = 'svg' | 'theme'
@@ -40,8 +40,8 @@ const TAB_ICONS: Record<Tab, string> = {
 
 export default function App() {
   // ── Storage & URL ──
-  const { initialSvgs, initialColorMap, persist, clearSession } = useStorage()
-  const { initialState: urlState, pushState: pushUrl, clearUrl } = useUrlState()
+  const { initialSvgs, initialColorMap, persist } = useStorage()
+  const { initialState: urlState, pushState: pushUrl } = useUrlState()
   const [hydrated, setHydrated] = useState(false)
 
   const mergedSvgs = useMemo(() => {
@@ -68,7 +68,11 @@ export default function App() {
     [colorMap, homogenizeFactor],
   )
   const { previewSvg } = usePreview(activeSvg?.raw ?? null, previewColorMap)
-  const galleries = usePaletteGallery(activeSvg?.raw ?? null, colors, contrastMap)
+  const [customPalettes, setCustomPalettes] = useState<PaletaCustom[]>([])
+  const [bgMode, setBgMode] = useState<'checker' | 'white' | 'black'>('checker')
+  const imageInputRef = useRef<HTMLInputElement>(null)
+  const [extracting, setExtracting] = useState(false)
+  const galleries = usePaletteGallery(activeSvg?.raw ?? null, colors, contrastMap, customPalettes)
 
   // ── Site theme (3 colores dominantes → primary/accent/tertiary) ──
   const siteTheme = useMemo(() => {
@@ -106,6 +110,10 @@ export default function App() {
     pushUrl(activeSvg.raw, activeSvg.fileName, colorMap)
   }, [activeSvg?.raw, colorMap, pushUrl, hydrated])
 
+  useEffect(() => {
+    document.documentElement.dataset.theme = bgMode === 'black' ? 'dark' : 'light'
+  }, [bgMode])
+
   // ── State ──
   const [selectedColor, setSelectedColor] = useState<string | null>(null)
   const [selectedEntry, setSelectedEntry] = useState<ColorEntry | null>(null)
@@ -134,13 +142,11 @@ export default function App() {
     setSelectedEntry(null)
   }, [])
 
-  const handlePaletteSelect = (color: PaletteColor) => {
-    if (selectedEntry) {
-      updateColor(selectedEntry.original, color.hex)
-    }
-  }
+  const removeCustomPalette = useCallback((i: number) => {
+    setCustomPalettes(prev => prev.filter((_, idx) => idx !== i))
+  }, [])
 
-  const handleSvgColorClick = useCallback((fill: string, e: React.MouseEvent<HTMLDivElement>) => {
+  const handleSvgColorClick = useCallback((fill: string, _e: React.MouseEvent<HTMLDivElement>) => {
     const lower = fill.toLowerCase()
     const revMap: Record<string, string> = {}
     for (const [orig, repl] of Object.entries(colorMap)) {
@@ -179,6 +185,36 @@ export default function App() {
     resetAll()
   }
 
+  const handleImageExtract = useCallback(async (file: File) => {
+    setExtracting(true)
+    try {
+      const url = URL.createObjectURL(file)
+      const img = new Image()
+      await new Promise<void>((resolve, reject) => {
+        img.onload = () => resolve()
+        img.onerror = () => reject()
+        img.src = url
+      })
+      const canvas = document.createElement('canvas')
+      const maxDim = 200
+      let w = img.naturalWidth, h = img.naturalHeight
+      if (w > maxDim || h > maxDim) { const s = maxDim / Math.max(w, h); w = Math.round(w * s); h = Math.round(h * s) }
+      canvas.width = w; canvas.height = h
+      const ctx = canvas.getContext('2d')!
+      ctx.drawImage(img, 0, 0, w, h)
+      const colors = extractDominantColors(ctx.getImageData(0, 0, w, h))
+      URL.revokeObjectURL(url)
+      if (colors.length > 0) {
+        const name = file.name.replace(/\.[^.]+$/, '').replace(/[^a-zA-Z0-9]/g, ' ').trim() || 'Imagen'
+        setCustomPalettes(prev => [...prev, { name, colors }])
+      }
+    } catch (e) {
+      console.error('Image extraction failed:', e)
+    } finally {
+      setExtracting(false)
+    }
+  }, [])
+
   // ── Keyboard shortcuts ──
   useKeyboardShortcuts({
     onUndo: undo,
@@ -187,12 +223,6 @@ export default function App() {
     onExport: () => setExportOpen(true),
     onHelp: () => setHelpOpen(true),
   })
-
-  // ── Derived ──
-  const themeColors = (() => {
-    const sorted = [...colors].sort((a, b) => b.elementCount - a.elementCount)
-    return sorted.slice(0, 3).map((c) => previewColorMap[c.original] ?? c.normalized)
-  })()
 
   // ── Shared tab bar ──
   const renderTabBar = (vertical?: boolean) => (
@@ -224,7 +254,7 @@ export default function App() {
 
       {/* ── Header (gradiente sutil primary→accent) ── */}
       <header className="sticky top-0 z-40 bg-white/70 backdrop-blur-xl border-b border-neutral-200/60"
-        style={{ backgroundImage: 'linear-gradient(135deg, color-mix(in srgb, var(--color-primary-500) 6%, white), color-mix(in srgb, var(--color-accent-500) 4%, white))' }}
+        style={{ backgroundImage: 'linear-gradient(135deg, color-mix(in srgb, var(--color-primary-500) 6%, var(--header-bg-base)), color-mix(in srgb, var(--color-accent-500) 4%, var(--header-bg-base)))' }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3 shrink-0">
@@ -333,6 +363,8 @@ export default function App() {
                   fileName={activeSvg?.fileName ?? null}
                   onReset={handleReset}
                   onColorClick={handleSvgColorClick}
+                  bgMode={bgMode}
+                  onBgModeChange={setBgMode}
                 />
               ) : (
                 <ThemePreview colorMap={previewColorMap} svgName={activeSvg?.fileName.replace(/\.svg$/i, '') ?? 'colors'} />
@@ -367,14 +399,16 @@ export default function App() {
                 renderTabBar={() => renderTabBar()}
                 galleries={galleries}
                 handleApplyPalette={handleApplyPalette}
-                handlePaletteSelect={handlePaletteSelect}
-                themeColors={themeColors}
                 lastAppliedPalette={lastAppliedPalette}
+                customPalettes={customPalettes}
+                onRemoveCustomPalette={removeCustomPalette}
                 selectedEntry={selectedEntry}
                 colorMap={colorMap}
                 closePicker={closePicker}
                 updateColor={updateColor}
                 resetColor={resetColor}
+                extracting={extracting}
+                onExtractClick={() => imageInputRef.current?.click()}
               />
             </div>
 
@@ -388,14 +422,16 @@ export default function App() {
                       renderTabBar={() => renderTabBar(true)}
                       galleries={galleries}
                       handleApplyPalette={handleApplyPalette}
-                      handlePaletteSelect={handlePaletteSelect}
-                      themeColors={themeColors}
                       lastAppliedPalette={lastAppliedPalette}
+                      customPalettes={customPalettes}
+                      onRemoveCustomPalette={removeCustomPalette}
                       selectedEntry={selectedEntry}
                       colorMap={colorMap}
                       closePicker={() => { closePicker(); setSidebarOpen(false) }}
                       updateColor={updateColor}
                       resetColor={resetColor}
+                      extracting={extracting}
+                      onExtractClick={() => imageInputRef.current?.click()}
                     />
                   </div>
                 </div>
@@ -421,6 +457,13 @@ export default function App() {
         accept=".svg"
         className="hidden"
         onChange={(e) => { const f = e.target.files?.[0]; if (f) { loadFile(f); e.target.value = '' } }}
+      />
+      <input
+        ref={imageInputRef}
+        type="file"
+        accept="image/png,image/jpeg,image/webp"
+        className="hidden"
+        onChange={(e) => { const f = e.target.files?.[0]; if (f) { handleImageExtract(f); e.target.value = '' } }}
       />
 
       <Dialog isOpen={helpOpen} onClose={() => setHelpOpen(false)} title="Keyboard shortcuts">
@@ -451,27 +494,31 @@ function SidebarContent({
   renderTabBar,
   galleries,
   handleApplyPalette,
-  handlePaletteSelect,
-  themeColors,
   lastAppliedPalette,
+  customPalettes,
+  onRemoveCustomPalette,
   selectedEntry,
   colorMap,
   closePicker,
   updateColor,
   resetColor,
+  extracting,
+  onExtractClick,
 }: {
   tab: Tab
   renderTabBar: () => React.ReactNode
   galleries: any[]
   handleApplyPalette: (colors: string[], paletteName?: string) => void
-  handlePaletteSelect: (color: PaletteColor) => void
-  themeColors: string[]
   lastAppliedPalette: string[] | null
+  customPalettes: PaletaCustom[]
+  onRemoveCustomPalette: (index: number) => void
   selectedEntry: ColorEntry | null
   colorMap: Record<string, string>
   closePicker: () => void
   updateColor: (orig: string, repl: string) => void
   resetColor: (orig: string) => void
+  extracting: boolean
+  onExtractClick: () => void
 }) {
   return (
     <>
@@ -483,8 +530,50 @@ function SidebarContent({
       <div className="bg-white rounded-xl border border-neutral-200 shadow-sm p-4">
         {tab === 'palettes' && (
           <section>
-            <p className="text-[11px] text-neutral-400 mb-3">Trending palettes from Coolors &mdash; import your own</p>
-            <TrendingPalettes onApply={handleApplyPalette} selectedPalette={lastAppliedPalette} handlePaletteSelect={handlePaletteSelect} />
+            {customPalettes.length > 0 && (
+              <div className="mb-4">
+                <p className="text-[11px] text-neutral-400 mb-2">
+                  Custom palettes from images &mdash; click to apply
+                </p>
+                <div className="space-y-2">
+                  {customPalettes.map((cp, i) => (
+                    <div
+                      key={i}
+                      className="flex items-center gap-2 px-3 py-2 rounded-lg border border-neutral-200 hover:border-primary-300 cursor-pointer transition-colors"
+                      onClick={() => handleApplyPalette(cp.colors, cp.name)}
+                    >
+                      <div className="flex gap-0.5 flex-1 min-w-0">
+                        {cp.colors.map((c, j) => (
+                          <div
+                            key={j}
+                            className="h-6 flex-1 first:rounded-l-md last:rounded-r-md"
+                            style={{ backgroundColor: c }}
+                          />
+                        ))}
+                      </div>
+                      <span className="text-xs text-neutral-500 truncate max-w-[100px]">{cp.name}</span>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); onRemoveCustomPalette(i) }}
+                        className="w-5 h-5 flex items-center justify-center text-neutral-400 hover:text-red-500 hover:bg-red-50 rounded transition-colors"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-[11px] text-neutral-400">Trending palettes from Coolors &mdash; import your own</p>
+              <button
+                onClick={onExtractClick}
+                disabled={extracting}
+                className="px-3 py-1.5 text-[11px] font-medium text-white bg-primary-500 hover:bg-primary-600 rounded-lg transition-colors disabled:opacity-50"
+              >
+                {extracting ? 'Extracting…' : 'From Image'}
+              </button>
+            </div>
+            <TrendingPalettes onApply={handleApplyPalette} selectedPalette={lastAppliedPalette} />
           </section>
         )}
 

@@ -1,13 +1,8 @@
-import { useState, useCallback, useRef } from 'react'
+import { useState, useCallback } from 'react'
 
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024
 const K_CLUSTERS = 6
 const K_ITERATIONS = 10
-
-interface KMeansResult {
-  centroid: number[]
-  count: number
-}
 
 function distance(a: number[], b: number[]) {
   const dr = a[0] - b[0]

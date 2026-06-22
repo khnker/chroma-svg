@@ -1,14 +1,12 @@
 import { useState } from 'react'
 import { useTrendingPalettes } from '@/hooks/useTrendingPalettes'
-import type { PaletteColor } from '@/core/types'
 
 interface TrendingPalettesProps {
   onApply: (colors: string[], paletteName?: string) => void
   selectedPalette?: string[] | null
-  handlePaletteSelect?: (color: PaletteColor) => void
 }
 
-export function TrendingPalettes({ onApply, selectedPalette, handlePaletteSelect }: TrendingPalettesProps) {
+export function TrendingPalettes({ onApply, selectedPalette }: TrendingPalettesProps) {
   const { palettes, loading, error, refetch } = useTrendingPalettes()
   const [coolorsUrl, setCoolorsUrl] = useState('')
   const [imported, setImported] = useState<string[] | null>(null)

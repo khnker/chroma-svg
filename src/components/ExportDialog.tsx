@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
 import { generateTailwindTokens } from '../core/color-replacer'
-import { buildNameMatrix } from '../lib/color-names'
+import { buildNameMatrix, generateFilenameFromColors } from '../lib/color-names'
 import type { ColorMap } from '../core/types'
 
 interface ExportDialogProps {
@@ -21,6 +21,10 @@ export function ExportDialog({ isOpen, onClose, svgContent, colorMap, svgName, p
   const cssTokens = useMemo(() => generateTailwindTokens(colorMap), [colorMap])
   const paletteJson = useMemo(() => JSON.stringify(colorMap, null, 2), [colorMap])
   const nameMatrix = useMemo(() => buildNameMatrix(colorMap, paletteName ?? null), [colorMap, paletteName])
+  const colorSuffix = useMemo(() => {
+    const s = generateFilenameFromColors(colorMap, paletteName)
+    return s !== 'palette' ? `-${s}` : ''
+  }, [colorMap, paletteName])
 
   if (!isOpen) return null
 
@@ -35,7 +39,7 @@ export function ExportDialog({ isOpen, onClose, svgContent, colorMap, svgName, p
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `${svgName}.${ext}`
+    a.download = `${svgName}${colorSuffix}.${ext}`
     a.click()
     URL.revokeObjectURL(url)
   }
