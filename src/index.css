@@ -1,17 +1,17 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary-50: #E5F2FF;
-  --color-primary-100: #CCE6FF;
-  --color-primary-200: #99CCFF;
-  --color-primary-300: #66B3FF;
-  --color-primary-400: #3399FF;
-  --color-primary-500: #0080FF;
-  --color-primary-600: #0066CC;
-  --color-primary-700: #004D99;
-  --color-primary-800: #003366;
-  --color-primary-900: #001A33;
-  --color-primary-950: #000D1A;
+  --color-primary-50: #F5F3FF;
+  --color-primary-100: #EDE9FE;
+  --color-primary-200: #DDD6FE;
+  --color-primary-300: #C4B5FD;
+  --color-primary-400: #A78BFA;
+  --color-primary-500: #8B5CF6;
+  --color-primary-600: #7C3AED;
+  --color-primary-700: #6D28D9;
+  --color-primary-800: #5B21B6;
+  --color-primary-900: #4C1D95;
+  --color-primary-950: #2E1065;
 
   --color-neutral-50: #F8FAFC;
   --color-neutral-100: #F1F5F9;
@@ -39,7 +39,7 @@
     scrollbar-color: var(--color-neutral-300) transparent;
   }
   ::selection {
-    background-color: var(--color-primary-100);
+    background-color: var(--color-primary-200);
     color: var(--color-primary-900);
   }
   :focus-visible {
