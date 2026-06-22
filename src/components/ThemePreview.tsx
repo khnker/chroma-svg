@@ -14,25 +14,25 @@ export function ThemePreview({ colorMap, svgName = 'colors' }: ThemePreviewProps
   const css = generateTailwindTokens(colorMap)
 
   return (
-    <div className="border rounded-xl bg-white shadow-sm h-[600px] overflow-y-auto">
-      <div className="sticky top-0 z-10 bg-white/95 backdrop-blur border-b flex items-center justify-between px-4 py-2">
+    <div className="bg-white rounded-xl border border-neutral-200 shadow-sm">
+      <div className="flex items-center justify-between px-4 py-2.5 border-b border-neutral-100">
         <span className="text-sm text-neutral-500 font-mono">{svgName}-tokens.css</span>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
           <button
             onClick={() => navigator.clipboard.writeText(css)}
-            className="px-3 py-1 text-xs border rounded hover:bg-neutral-50"
+            className="px-3 py-1 text-xs font-medium text-neutral-600 bg-neutral-100 hover:bg-neutral-200 rounded-lg transition-colors"
           >
             Copy CSS
           </button>
           <button
             onClick={() => downloadCssTokens(colorMap, svgName)}
-            className="px-3 py-1 text-xs bg-primary-500 text-white rounded hover:bg-primary-600"
+            className="px-3 py-1 text-xs font-medium text-white bg-primary-500 hover:bg-primary-600 rounded-lg transition-colors"
           >
             Download CSS
           </button>
         </div>
       </div>
-      <div className="p-4">
+      <div className="p-4 h-[560px] overflow-y-auto">
         {primary && secondary && accent ? (
           <ComponentPreview primary={primary} secondary={secondary} accent={accent} />
         ) : (

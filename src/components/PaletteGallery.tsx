@@ -40,7 +40,7 @@ function GalleryCard({
 
   return (
     <div
-      className="rounded-xl border border-neutral-200 overflow-hidden hover:border-neutral-300 hover:shadow-md transition-all"
+      className="bg-white rounded-xl border border-neutral-200 shadow-sm overflow-hidden hover:border-neutral-300 hover:shadow-md transition-all"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >

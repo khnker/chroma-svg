@@ -28,12 +28,12 @@ describe('SvgPreview', () => {
     expect(downloadBtn).toBeTruthy()
   })
 
-  it('reset/new SVG button triggers onReset', () => {
+  it('reset button triggers onReset', () => {
     const onReset = vi.fn()
     render(
       <SvgPreview svgContent={svgContent} fileName="test.svg" onReset={onReset} />
     )
-    const resetBtn = screen.getByText(/new/i).closest('button')!
+    const resetBtn = screen.getByText(/reset/i).closest('button')!
     fireEvent.click(resetBtn)
     expect(onReset).toHaveBeenCalled()
   })

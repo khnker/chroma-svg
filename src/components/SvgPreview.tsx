@@ -41,40 +41,41 @@ export function SvgPreview({ svgContent, fileName, onReset, onColorClick }: SvgP
   }
 
   return (
-    <div className="space-y-3">
-      <div className="flex items-center justify-between">
+    <div className="bg-white rounded-xl border border-neutral-200 shadow-sm overflow-hidden">
+      <div className="flex items-center justify-between px-4 py-2.5 border-b border-neutral-100">
         <div className="flex items-center gap-2">
-          <span className="text-sm text-neutral-500">{fileName}</span>
+          <span className="text-sm text-neutral-500 font-mono">{fileName}</span>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
           <button
             onClick={() => setZoom((z) => Math.max(0.25, z - 0.25))}
-            className="px-2 py-1 text-xs border rounded hover:bg-neutral-50"
+            className="px-2 py-1 text-xs border border-neutral-200 rounded hover:bg-neutral-50 text-neutral-500"
           >
             -
           </button>
-          <span className="text-xs text-neutral-500 w-8 text-center">{Math.round(zoom * 100)}%</span>
+          <span className="text-xs text-neutral-400 font-mono w-8 text-center">{Math.round(zoom * 100)}%</span>
           <button
             onClick={() => setZoom((z) => Math.min(3, z + 0.25))}
-            className="px-2 py-1 text-xs border rounded hover:bg-neutral-50"
+            className="px-2 py-1 text-xs border border-neutral-200 rounded hover:bg-neutral-50 text-neutral-500"
           >
             +
           </button>
+          <div className="w-px h-5 bg-neutral-200 mx-1" />
           <button
             onClick={handleDownload}
-            className="px-3 py-1 text-xs bg-primary-500 text-white rounded hover:bg-primary-600"
+            className="px-3 py-1 text-xs font-medium text-white bg-primary-500 hover:bg-primary-600 rounded-lg transition-colors"
           >
             Download
           </button>
           <button
             onClick={onReset}
-            className="px-3 py-1 text-xs border border-red-200 text-red-500 rounded hover:bg-red-50"
+            className="px-3 py-1 text-xs font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors"
           >
-            New SVG
+            Reset
           </button>
         </div>
       </div>
-      <div className="border rounded-xl p-4 bg-white shadow-sm flex items-center justify-center h-[600px] overflow-auto">
+      <div className="p-4 bg-neutral-50 flex items-center justify-center h-[560px] overflow-auto">
         <div
           style={{ transform: `scale(${zoom})`, transformOrigin: 'center center' }}
           dangerouslySetInnerHTML={{ __html: svgContent }}
