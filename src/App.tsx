@@ -87,7 +87,6 @@ export default function App() {
     const f1 = fill(s1, c1); const f2 = fill(s2, c2 ?? c1); const f3 = fill(s3, c3 ?? c1)
     const stops = ['50','100','200','300','400','500','600','700','800','900','950'] as const
     const prefix = ['primary', 'accent', 'tertiary']
-    const colors = [c1, c2 ?? c1, c3 ?? c1]
     const scales = [f1, f2, f3]
     const vars: Record<string, string> = {}
     for (let i = 0; i < 3; i++) {
@@ -186,7 +185,6 @@ export default function App() {
     onRedo: redo,
     onReset: handleReset,
     onExport: () => setExportOpen(true),
-    onExportCss: () => setExportOpen(true),
     onHelp: () => setHelpOpen(true),
   })
 
@@ -250,14 +248,25 @@ export default function App() {
                 </div>
               )}
               <div className="flex items-center gap-1 shrink-0">
-                  <Tooltip content="Export (Cmd+E)">
-                    <button
-                      onClick={() => setExportOpen(true)}
-                      className="min-w-[44px] h-9 px-3 flex items-center justify-center text-xs font-medium text-white bg-accent-500 hover:bg-accent-600 rounded-lg transition-all active:scale-95 shadow-sm"
-                    >
-                      Export
-                    </button>
-                  </Tooltip>
+                <Tooltip content="Import another SVG file">
+                  <button
+                    onClick={() => document.getElementById('svg-file-input')?.click()}
+                    className="min-w-[44px] h-9 px-3 flex items-center justify-center text-xs font-medium text-neutral-600 bg-neutral-100 hover:bg-neutral-200 rounded-lg transition-all active:scale-95"
+                  >
+                    <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Import
+                  </button>
+                </Tooltip>
+                <Tooltip content="Export (Cmd+E)">
+                  <button
+                    onClick={() => setExportOpen(true)}
+                    className="min-w-[44px] h-9 px-3 flex items-center justify-center text-xs font-medium text-white bg-accent-500 hover:bg-accent-600 rounded-lg transition-all active:scale-95 shadow-sm"
+                  >
+                    Export
+                  </button>
+                </Tooltip>
                 <Tooltip content="Reset all colors (R)">
                   <button
                     onClick={handleReset}
@@ -419,6 +428,15 @@ export default function App() {
         colorMap={colorMap}
         svgName={activeSvg?.fileName.replace(/\.svg$/i, '') ?? 'colors'}
         paletteName={lastAppliedPaletteName}
+      />
+
+      {/* Hidden file input for importing additional SVGs */}
+      <input
+        id="svg-file-input"
+        type="file"
+        accept=".svg"
+        className="hidden"
+        onChange={(e) => { const f = e.target.files?.[0]; if (f) { loadFile(f); e.target.value = '' } }}
       />
 
       <Dialog isOpen={helpOpen} onClose={() => setHelpOpen(false)} title="Keyboard shortcuts">
