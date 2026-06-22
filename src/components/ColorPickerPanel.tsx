@@ -44,20 +44,20 @@ export function ColorPickerPanel({ original, current, onChange, onReset }: Color
   return (
     <div className="space-y-3">
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-lg border border-gray-200" style={{ backgroundColor: localColor }} />
+        <div className="w-10 h-10 rounded-lg border border-neutral-200" style={{ backgroundColor: localColor }} />
         <div className="flex-1">
-          <label className="text-xs text-gray-500 font-medium">HEX</label>
+          <label className="text-xs text-neutral-500 font-medium">HEX</label>
           <input
             type="text"
             value={hexInput}
             onChange={(e) => handleHexChange(e.target.value)}
-            className="w-full px-2 py-1 text-sm font-mono border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-full px-2 py-1 text-sm font-mono border rounded focus:outline-none focus:ring-2 focus:ring-primary-400"
           />
         </div>
         {isModified && (
           <button
             onClick={onReset}
-            className="text-xs text-gray-400 hover:text-red-500 underline"
+            className="text-xs text-neutral-400 hover:text-red-500 underline"
           >
             Reset
           </button>

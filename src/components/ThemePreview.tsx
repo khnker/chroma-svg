@@ -16,17 +16,17 @@ export function ThemePreview({ colorMap, svgName = 'colors' }: ThemePreviewProps
   return (
     <div className="border rounded-xl bg-white h-[600px] overflow-y-auto">
       <div className="sticky top-0 z-10 bg-white/95 backdrop-blur border-b flex items-center justify-between px-4 py-2">
-        <span className="text-sm text-gray-500 font-mono">{svgName}-tokens.css</span>
+        <span className="text-sm text-neutral-500 font-mono">{svgName}-tokens.css</span>
         <div className="flex items-center gap-2">
           <button
             onClick={() => navigator.clipboard.writeText(css)}
-            className="px-3 py-1 text-xs border rounded hover:bg-gray-50"
+            className="px-3 py-1 text-xs border rounded hover:bg-neutral-50"
           >
             Copy CSS
           </button>
           <button
             onClick={() => downloadCssTokens(colorMap, svgName)}
-            className="px-3 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600"
+            className="px-3 py-1 text-xs bg-primary-500 text-white rounded hover:bg-primary-600"
           >
             Download CSS
           </button>
@@ -36,7 +36,7 @@ export function ThemePreview({ colorMap, svgName = 'colors' }: ThemePreviewProps
         {primary && secondary && accent ? (
           <ComponentPreview primary={primary} secondary={secondary} accent={accent} />
         ) : (
-          <div className="flex items-center justify-center h-[500px] text-sm text-gray-400">
+          <div className="flex items-center justify-center h-[500px] text-sm text-neutral-400">
             Need at least 3 colors for preview
           </div>
         )}

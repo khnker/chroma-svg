@@ -10,7 +10,7 @@ interface ColorListProps {
 export function ColorList({ colors, colorMap, onColorSelect, selectedColor }: ColorListProps) {
   if (colors.length === 0) {
     return (
-      <div className="text-center py-8 text-gray-400 text-sm">
+      <div className="text-center py-8 text-neutral-400 text-sm">
         No colors detected
       </div>
     )
@@ -28,11 +28,11 @@ export function ColorList({ colors, colorMap, onColorSelect, selectedColor }: Co
             onClick={() => onColorSelect(entry)}
             className={`flex items-center gap-1 px-2 py-1 rounded-md text-xs font-mono transition-colors
               ${isSelected
-                ? 'bg-blue-50 ring-1 ring-blue-200 text-blue-700'
-                : 'text-gray-600 hover:bg-gray-100 border border-transparent'}`}
+                ? 'bg-primary-50 ring-1 ring-primary-200 text-primary-700'
+                : 'text-neutral-600 hover:bg-neutral-100 border border-transparent'}`}
           >
             <span
-              className="w-3.5 h-3.5 rounded-sm border border-gray-200 shrink-0"
+              className="w-3.5 h-3.5 rounded-sm border border-neutral-200 shrink-0"
               style={{ backgroundColor: currentColor }}
             />
             <span>{currentColor}</span>

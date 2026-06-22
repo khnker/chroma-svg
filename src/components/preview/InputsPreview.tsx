@@ -15,12 +15,12 @@ export function InputsPreview({ primary, secondary, accent }: ComponentPreviewPr
   return (
     <div className="space-y-4 max-w-sm">
       <div>
-        <p className="text-xs text-gray-400 mb-2">Text Input</p>
+        <p className="text-xs text-neutral-400 mb-2">Text Input</p>
         <div className="space-y-2">
           <input
             type="text"
             placeholder="Default input"
-            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg outline-none transition-all"
+            className="w-full px-3 py-2 text-sm border border-neutral-300 rounded-lg outline-none transition-all"
             {...focusRing(primary)}
           />
           <input
@@ -33,9 +33,9 @@ export function InputsPreview({ primary, secondary, accent }: ComponentPreviewPr
         </div>
       </div>
       <div>
-        <p className="text-xs text-gray-400 mb-2">Select</p>
+        <p className="text-xs text-neutral-400 mb-2">Select</p>
         <select
-          className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg outline-none transition-all"
+          className="w-full px-3 py-2 text-sm border border-neutral-300 rounded-lg outline-none transition-all"
           {...focusRing(secondary)}
         >
           <option>Option one</option>
@@ -44,18 +44,18 @@ export function InputsPreview({ primary, secondary, accent }: ComponentPreviewPr
         </select>
       </div>
       <div>
-        <p className="text-xs text-gray-400 mb-2">Textarea</p>
+        <p className="text-xs text-neutral-400 mb-2">Textarea</p>
         <textarea
           rows={3}
           placeholder="Multi-line input..."
-          className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg outline-none transition-all resize-none"
+          className="w-full px-3 py-2 text-sm border border-neutral-300 rounded-lg outline-none transition-all resize-none"
           {...focusRing(accent)}
         />
       </div>
       <div>
-        <p className="text-xs text-gray-400 mb-2">Checkboxes & Radios</p>
+        <p className="text-xs text-neutral-400 mb-2">Checkboxes & Radios</p>
         <div className="flex flex-wrap gap-4">
-          <label className="flex items-center gap-2 text-xs text-gray-700">
+          <label className="flex items-center gap-2 text-xs text-neutral-700">
             <input
               type="checkbox"
               defaultChecked
@@ -64,11 +64,11 @@ export function InputsPreview({ primary, secondary, accent }: ComponentPreviewPr
             />
             Checked
           </label>
-          <label className="flex items-center gap-2 text-xs text-gray-700">
+          <label className="flex items-center gap-2 text-xs text-neutral-700">
             <input type="checkbox" className="rounded" style={{ accentColor: secondary }} />
             Unchecked
           </label>
-          <label className="flex items-center gap-2 text-xs text-gray-700">
+          <label className="flex items-center gap-2 text-xs text-neutral-700">
             <input
               type="radio"
               defaultChecked
@@ -78,7 +78,7 @@ export function InputsPreview({ primary, secondary, accent }: ComponentPreviewPr
             />
             Radio A
           </label>
-          <label className="flex items-center gap-2 text-xs text-gray-700">
+          <label className="flex items-center gap-2 text-xs text-neutral-700">
             <input type="radio" name="radio" className="rounded-full" style={{ accentColor: primary }} />
             Radio B
           </label>

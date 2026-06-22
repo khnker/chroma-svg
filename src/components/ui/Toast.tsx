@@ -25,7 +25,7 @@ export function useToast() {
 const variantStyles: Record<ToastVariant, string> = {
   success: 'bg-green-500 text-white',
   error: 'bg-red-500 text-white',
-  info: 'bg-blue-500 text-white',
+  info: 'bg-primary-500 text-white',
 }
 
 export function ToastContainer({ children }: { children: React.ReactNode }) {

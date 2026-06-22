@@ -20,7 +20,7 @@ export function BadgesPreview({ primary, secondary, accent }: ComponentPreviewPr
   )
 
   const dot = (color: string) => (
-    <span className="inline-flex items-center gap-1.5 text-xs text-gray-600">
+    <span className="inline-flex items-center gap-1.5 text-xs text-neutral-600">
       <span className="w-2 h-2 rounded-full" style={{ backgroundColor: color }} />
       Online
     </span>
@@ -29,7 +29,7 @@ export function BadgesPreview({ primary, secondary, accent }: ComponentPreviewPr
   return (
     <div className="space-y-4">
       <div>
-        <p className="text-xs text-gray-400 mb-2">Soft Badges</p>
+        <p className="text-xs text-neutral-400 mb-2">Soft Badges</p>
         <div className="flex flex-wrap gap-2">
           {badge('Primary', primary)}
           {badge('Secondary', secondary)}
@@ -41,7 +41,7 @@ export function BadgesPreview({ primary, secondary, accent }: ComponentPreviewPr
         </div>
       </div>
       <div>
-        <p className="text-xs text-gray-400 mb-2">Solid Pills</p>
+        <p className="text-xs text-neutral-400 mb-2">Solid Pills</p>
         <div className="flex flex-wrap gap-2">
           {pill('Primary', primary)}
           {pill('Secondary', secondary)}
@@ -49,7 +49,7 @@ export function BadgesPreview({ primary, secondary, accent }: ComponentPreviewPr
         </div>
       </div>
       <div>
-        <p className="text-xs text-gray-400 mb-2">Status Dots</p>
+        <p className="text-xs text-neutral-400 mb-2">Status Dots</p>
         <div className="flex flex-wrap gap-4">
           {dot(primary)}
           {dot(secondary)}

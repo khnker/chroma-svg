@@ -4,13 +4,13 @@ export function NavigationPreview({ primary }: ComponentPreviewProps) {
   return (
     <div className="space-y-4">
       <div>
-        <p className="text-xs text-gray-400 mb-2">Tabs</p>
-        <div className="flex border-b border-gray-200">
+        <p className="text-xs text-neutral-400 mb-2">Tabs</p>
+        <div className="flex border-b border-neutral-200">
           {['Home', 'Profile', 'Settings', 'Billing'].map((label, i) => (
             <button
               key={label}
               className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
-                i === 0 ? '' : 'text-gray-500 hover:text-gray-700'
+                i === 0 ? '' : 'text-neutral-500 hover:text-neutral-700'
               }`}
               style={{
                 borderBottomColor: i === 0 ? primary : 'transparent',
@@ -24,13 +24,13 @@ export function NavigationPreview({ primary }: ComponentPreviewProps) {
       </div>
 
       <div>
-        <p className="text-xs text-gray-400 mb-2">Breadcrumbs</p>
+        <p className="text-xs text-neutral-400 mb-2">Breadcrumbs</p>
         <nav className="flex items-center gap-1.5 text-xs">
           {['Home', 'Projects', 'Design'].map((label, i) => (
             <span key={label} className="flex items-center gap-1.5">
-              {i > 0 && <span className="text-gray-300">/</span>}
+              {i > 0 && <span className="text-neutral-300">/</span>}
               <span
-                className={i === 2 ? 'font-medium' : 'text-gray-500'}
+                className={i === 2 ? 'font-medium' : 'text-neutral-500'}
                 style={i === 2 ? { color: primary } : undefined}
               >
                 {label}
@@ -41,7 +41,7 @@ export function NavigationPreview({ primary }: ComponentPreviewProps) {
       </div>
 
       <div>
-        <p className="text-xs text-gray-400 mb-2">Sidebar Links</p>
+        <p className="text-xs text-neutral-400 mb-2">Sidebar Links</p>
         <div className="space-y-1 max-w-[160px]">
           {[
             { label: 'Dashboard', active: true },
@@ -65,7 +65,7 @@ export function NavigationPreview({ primary }: ComponentPreviewProps) {
       </div>
 
       <div>
-        <p className="text-xs text-gray-400 mb-2">Pagination</p>
+        <p className="text-xs text-neutral-400 mb-2">Pagination</p>
         <div className="flex items-center gap-1">
           {['«', '1', '2', '3', '...', '8', '»'].map((label) => {
             const isActive = label === '1'
@@ -73,7 +73,7 @@ export function NavigationPreview({ primary }: ComponentPreviewProps) {
               <button
                 key={label}
                 className={`w-8 h-8 text-xs rounded transition-colors ${
-                  isActive ? 'text-white' : 'text-gray-600 hover:bg-gray-100'
+                  isActive ? 'text-white' : 'text-neutral-600 hover:bg-neutral-100'
                 }`}
                 style={isActive ? { backgroundColor: primary } : undefined}
               >

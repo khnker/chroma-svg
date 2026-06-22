@@ -14,7 +14,7 @@ export function ButtonsPreview({ primary, secondary, accent }: ComponentPreviewP
   return (
     <div className="space-y-4">
       <div>
-        <p className="text-xs text-gray-400 mb-2">Solid</p>
+        <p className="text-xs text-neutral-400 mb-2">Solid</p>
         <div className="flex flex-wrap gap-3">
           {btn('Primary', primary)}
           {btn('Secondary', secondary)}
@@ -22,7 +22,7 @@ export function ButtonsPreview({ primary, secondary, accent }: ComponentPreviewP
         </div>
       </div>
       <div>
-        <p className="text-xs text-gray-400 mb-2">Outlined</p>
+        <p className="text-xs text-neutral-400 mb-2">Outlined</p>
         <div className="flex flex-wrap gap-3">
           {['Primary', 'Secondary', 'Accent'].map((label, i) => {
             const c = [primary, secondary, accent][i]
@@ -39,7 +39,7 @@ export function ButtonsPreview({ primary, secondary, accent }: ComponentPreviewP
         </div>
       </div>
       <div>
-        <p className="text-xs text-gray-400 mb-2">Ghost</p>
+        <p className="text-xs text-neutral-400 mb-2">Ghost</p>
         <div className="flex flex-wrap gap-3">
           {['Primary', 'Secondary', 'Accent'].map((label, i) => {
             const c = [primary, secondary, accent][i]
@@ -58,7 +58,7 @@ export function ButtonsPreview({ primary, secondary, accent }: ComponentPreviewP
         </div>
       </div>
       <div>
-        <p className="text-xs text-gray-400 mb-2">Sizes</p>
+        <p className="text-xs text-neutral-400 mb-2">Sizes</p>
         <div className="flex items-end gap-3">
           {['sm', 'md', 'lg'].map((size) => (
             <button

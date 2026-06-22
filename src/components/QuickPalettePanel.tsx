@@ -18,13 +18,13 @@ export function QuickPalettePanel({ seedColor, onApply, disabled, paletteColors 
   return (
     <div className="space-y-3">
       {paletteColors ? (
-        <div className="text-xs text-gray-400 space-y-1">
+        <div className="text-xs text-neutral-400 space-y-1">
           <p>Harmonies based on your palette:</p>
           <div className="flex gap-1">
             {paletteColors.map((c, i) => (
               <div
                 key={i}
-                className="w-5 h-5 rounded border border-gray-200"
+                className="w-5 h-5 rounded border border-neutral-200"
                 style={{ backgroundColor: c }}
                 title={c}
               />
@@ -32,7 +32,7 @@ export function QuickPalettePanel({ seedColor, onApply, disabled, paletteColors 
           </div>
         </div>
       ) : (
-        <p className="text-xs text-gray-400">
+        <p className="text-xs text-neutral-400">
           Palettes generated from <span className="font-mono font-medium" style={{ color: seedColor, backgroundColor: textColor(seedColor) === '#ffffff' ? '#1f2937' : 'transparent', padding: '0 2px', borderRadius: 2 }}>{seedColor}</span>
           {' '}— click to apply all colors at once
         </p>
@@ -61,11 +61,11 @@ function PaletteCard({
   disabled?: boolean
 }) {
   return (
-    <div className="rounded-lg border border-gray-200 p-3 hover:border-gray-300 transition-colors">
+    <div className="rounded-lg border border-neutral-200 p-3 hover:border-neutral-300 transition-colors">
       <div className="flex items-center justify-between mb-2">
         <div>
-          <h4 className="text-sm font-medium text-gray-800">{palette.name}</h4>
-          <p className="text-[10px] text-gray-400">{palette.category}</p>
+          <h4 className="text-sm font-medium text-neutral-800">{palette.name}</h4>
+          <p className="text-[10px] text-neutral-400">{palette.category}</p>
         </div>
         <button
           onClick={() => onApply(palette.colors)}
@@ -76,12 +76,12 @@ function PaletteCard({
           Apply 🎲
         </button>
       </div>
-      <p className="text-[10px] text-gray-400 mb-2">{palette.description}</p>
+      <p className="text-[10px] text-neutral-400 mb-2">{palette.description}</p>
       <div className="flex gap-1">
         {palette.colors.map((c, i) => (
           <div
             key={i}
-            className="flex-1 h-8 rounded border border-gray-100 first:rounded-l-md last:rounded-r-md"
+            className="flex-1 h-8 rounded border border-neutral-100 first:rounded-l-md last:rounded-r-md"
             style={{ backgroundColor: c }}
             title={`${c}`}
           />

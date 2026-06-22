@@ -16,8 +16,8 @@ export function SvgTabBar({ svgs, activeId, onSelect, onClose }: SvgTabBarProps)
           onClick={() => onSelect(svg.id)}
           className={`px-3 py-1 text-xs rounded-full transition-colors whitespace-nowrap
             ${svg.id === activeId
-              ? 'bg-blue-500 text-white'
-              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+              ? 'bg-primary-500 text-white'
+              : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'}`}
         >
           {svg.fileName}
           <span

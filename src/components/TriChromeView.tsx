@@ -52,7 +52,7 @@ export function TriChromeView({ colors, onApply }: TriChromeViewProps) {
 
   if (palettes.length === 0) {
     return (
-      <div className="text-center py-6 text-gray-400 text-sm">
+      <div className="text-center py-6 text-neutral-400 text-sm">
         Load an SVG to see tri-chrome palettes
       </div>
     )
@@ -60,14 +60,14 @@ export function TriChromeView({ colors, onApply }: TriChromeViewProps) {
 
   return (
     <div className="space-y-4">
-      <p className="text-xs text-gray-400">
+      <p className="text-xs text-neutral-400">
         3-color palettes generated from your dominant colors
       </p>
       <div className="space-y-3">
         {palettes.map((palette) => (
-          <div key={palette.name} className="rounded-lg border border-gray-200 p-3 hover:border-gray-300 transition-colors">
+          <div key={palette.name} className="rounded-lg border border-neutral-200 p-3 hover:border-neutral-300 transition-colors">
             <div className="flex items-center justify-between mb-2">
-              <h4 className="text-sm font-medium text-gray-800">{palette.name}</h4>
+              <h4 className="text-sm font-medium text-neutral-800">{palette.name}</h4>
               <button
                 onClick={() => onApply(palette.colors)}
                 className="px-3 py-1 text-xs rounded-md text-white font-medium transition-opacity hover:opacity-90"
@@ -80,13 +80,13 @@ export function TriChromeView({ colors, onApply }: TriChromeViewProps) {
               {palette.colors.map((c, i) => (
                 <div key={c} className="flex-1 space-y-1">
                   <div
-                    className="w-full aspect-[2/1] rounded border border-gray-100"
+                    className="w-full aspect-[2/1] rounded border border-neutral-100"
                     style={{ backgroundColor: c }}
                   />
-                  <p className="text-[9px] font-mono text-center text-gray-500 truncate">
+                  <p className="text-[9px] font-mono text-center text-neutral-500 truncate">
                     {COLOR_TERMS[i] ?? ''}
                   </p>
-                  <p className="text-[9px] font-mono text-center text-gray-400 truncate">{c}</p>
+                  <p className="text-[9px] font-mono text-center text-neutral-400 truncate">{c}</p>
                 </div>
               ))}
             </div>

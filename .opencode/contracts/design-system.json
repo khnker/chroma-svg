@@ -1,0 +1,77 @@
+{
+  "feature": "design-system",
+  "description": "Apply UI design system tokens (Primary #0080FF + Neutral scale) to ts-svg-color-viewer using Tailwind CSS 4 @theme directive",
+  "layers": {
+    "css": {
+      "files": ["src/index.css"],
+      "changes": "Add @theme block with custom color tokens matching the design system palette",
+      "parallel": true
+    },
+    "components": {
+      "files": [
+        "src/App.tsx",
+        "src/components/ui/Button.tsx",
+        "src/components/ui/Dialog.tsx",
+        "src/components/ui/Toast.tsx",
+        "src/components/ui/Tooltip.tsx",
+        "src/components/ColorList.tsx",
+        "src/components/ColorPickerPanel.tsx",
+        "src/components/SvgPreview.tsx",
+        "src/components/SvgUploader.tsx",
+        "src/components/PaletteBrowser.tsx",
+        "src/components/TrendingPalettes.tsx",
+        "src/components/HomogenizeSlider.tsx",
+        "src/components/ThemePreview.tsx",
+        "src/components/ComponentPreview.tsx",
+        "src/components/LoadingSkeleton.tsx",
+        "src/components/SvgTabBar.tsx",
+        "src/components/QuickPalettePanel.tsx",
+        "src/components/PaletteGallery.tsx",
+        "src/components/TriChromeView.tsx",
+        "src/components/Logo.tsx",
+        "src/components/ColorSwatch.tsx"
+      ],
+      "changes": "Replace hardcoded bg-gray-*, text-gray-*, border-gray-*, bg-blue-* with theme-aware tokens. Keep structural classes intact."
+    }
+  },
+  "tokens": {
+    "primary": {
+      "50": "#E5F2FF",
+      "100": "#CCE6FF",
+      "200": "#99CCFF",
+      "300": "#66B3FF",
+      "400": "#3399FF",
+      "500": "#0080FF",
+      "600": "#0066CC",
+      "700": "#004D99",
+      "800": "#003366",
+      "900": "#001A33",
+      "950": "#000D1A"
+    },
+    "neutral": {
+      "50": "#F8FAFC",
+      "100": "#F1F5F9",
+      "200": "#E2E8F0",
+      "300": "#CBD5E1",
+      "400": "#94A3B8",
+      "500": "#64748B",
+      "600": "#475569",
+      "700": "#334155",
+      "800": "#1E293B",
+      "900": "#0F172A",
+      "950": "#020617"
+    }
+  },
+  "invariants": [
+    "No new dependencies",
+    "No breaking changes to component APIs",
+    "All existing tests should pass",
+    "No new files created unless strictly necessary",
+    "Build must pass with tsc -b && vite build"
+  ],
+  "parallel": false,
+  "acceptance": {
+    "checks": ["buildPasses", "testsPass"],
+    "criteria": "Theme tokens are applied in @theme, components use theme-aware classes consistently, build passes"
+  }
+}

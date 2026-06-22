@@ -20,9 +20,9 @@ const SECTIONS: { id: string; label: string; Component: FC<ComponentPreviewProps
 
 export function ComponentPreview({ primary, secondary, accent }: ComponentPreviewProps) {
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-4">
+    <div className="bg-white rounded-xl border border-neutral-200 p-4">
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-sm font-medium text-gray-700">Theme Preview</h3>
+        <h3 className="text-sm font-medium text-neutral-700">Theme Preview</h3>
         <div className="flex gap-2">
           {[
             { label: 'Primary', color: primary },
@@ -30,8 +30,8 @@ export function ComponentPreview({ primary, secondary, accent }: ComponentPrevie
             { label: 'Accent', color: accent },
           ].map((c) => (
             <div key={c.label} className="flex items-center gap-1.5">
-              <div className="w-4 h-4 rounded border border-gray-200" style={{ backgroundColor: c.color }} />
-              <span className="text-xs text-gray-400">{c.label}</span>
+              <div className="w-4 h-4 rounded border border-neutral-200" style={{ backgroundColor: c.color }} />
+              <span className="text-xs text-neutral-400">{c.label}</span>
             </div>
           ))}
         </div>
@@ -40,7 +40,7 @@ export function ComponentPreview({ primary, secondary, accent }: ComponentPrevie
       <div className="space-y-6">
         {SECTIONS.map(({ id, label, Component }) => (
           <section key={id}>
-            <h4 className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-3">{label}</h4>
+            <h4 className="text-xs font-medium text-neutral-500 uppercase tracking-wide mb-3">{label}</h4>
             <Component primary={primary} secondary={secondary} accent={accent} />
           </section>
         ))}

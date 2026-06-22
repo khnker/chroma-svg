@@ -44,25 +44,25 @@ export function SvgPreview({ svgContent, fileName, onReset, onColorClick }: SvgP
     <div className="space-y-3">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <span className="text-sm text-gray-500">{fileName}</span>
+          <span className="text-sm text-neutral-500">{fileName}</span>
         </div>
         <div className="flex items-center gap-2">
           <button
             onClick={() => setZoom((z) => Math.max(0.25, z - 0.25))}
-            className="px-2 py-1 text-xs border rounded hover:bg-gray-50"
+            className="px-2 py-1 text-xs border rounded hover:bg-neutral-50"
           >
             -
           </button>
-          <span className="text-xs text-gray-500 w-8 text-center">{Math.round(zoom * 100)}%</span>
+          <span className="text-xs text-neutral-500 w-8 text-center">{Math.round(zoom * 100)}%</span>
           <button
             onClick={() => setZoom((z) => Math.min(3, z + 0.25))}
-            className="px-2 py-1 text-xs border rounded hover:bg-gray-50"
+            className="px-2 py-1 text-xs border rounded hover:bg-neutral-50"
           >
             +
           </button>
           <button
             onClick={handleDownload}
-            className="px-3 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600"
+            className="px-3 py-1 text-xs bg-primary-500 text-white rounded hover:bg-primary-600"
           >
             Download
           </button>

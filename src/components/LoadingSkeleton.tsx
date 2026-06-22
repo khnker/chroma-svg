@@ -14,7 +14,7 @@ const variantStyles = {
 export function LoadingSkeleton({ variant = 'text', width, height, className }: LoadingSkeletonProps) {
   return (
     <div
-      className={`bg-gray-200 animate-pulse ${variantStyles[variant]} ${className ?? ''}`}
+      className={`bg-neutral-200 animate-pulse ${variantStyles[variant]} ${className ?? ''}`}
       style={{ width, height }}
     />
   )

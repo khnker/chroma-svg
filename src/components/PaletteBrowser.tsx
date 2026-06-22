@@ -26,7 +26,7 @@ export function PaletteBrowser({ onColorSelect, onApply }: PaletteBrowserProps) 
   return (
     <div className="space-y-4">
       <details className="text-sm">
-        <summary className="cursor-pointer text-gray-500 hover:text-gray-700 font-medium">
+        <summary className="cursor-pointer text-neutral-500 hover:text-neutral-700 font-medium">
           Import from Coolors
         </summary>
         <div className="mt-2 flex gap-2">
@@ -35,11 +35,11 @@ export function PaletteBrowser({ onColorSelect, onApply }: PaletteBrowserProps) 
             placeholder="https://coolors.co/0267c1-0075c4-efa00b"
             value={coolorsUrl}
             onChange={(e) => { setCoolorsUrl(e.target.value); setImported(null) }}
-            className="flex-1 px-3 py-2 border rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="flex-1 px-3 py-2 border rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-primary-400"
           />
           <button
             onClick={handleImport}
-            className="px-3 py-2 text-xs bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+            className="px-3 py-2 text-xs bg-primary-500 text-white rounded-lg hover:bg-primary-600"
           >
             Import
           </button>
@@ -59,7 +59,7 @@ export function PaletteBrowser({ onColorSelect, onApply }: PaletteBrowserProps) 
             </div>
             <button
               onClick={() => onApply(imported)}
-              className="px-3 py-1 text-xs bg-gray-800 text-white rounded-lg hover:bg-gray-900"
+              className="px-3 py-1 text-xs bg-neutral-800 text-white rounded-lg hover:bg-neutral-900"
             >
               Apply 🎲
             </button>
@@ -72,15 +72,15 @@ export function PaletteBrowser({ onColorSelect, onApply }: PaletteBrowserProps) 
         placeholder="Search palettes..."
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
-        className="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+        className="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-400"
       />
       {palettes.map((palette) => (
         <div key={palette.name}>
           <div className="flex items-center justify-between mb-2">
-            <h4 className="text-sm font-medium text-gray-700">{palette.name}</h4>
+            <h4 className="text-sm font-medium text-neutral-700">{palette.name}</h4>
             <button
               onClick={() => onApply(palette.colors.map((c) => c.hex))}
-              className="px-2.5 py-1 text-xs bg-gray-800 text-white rounded-lg hover:bg-gray-900"
+              className="px-2.5 py-1 text-xs bg-neutral-800 text-white rounded-lg hover:bg-neutral-900"
             >
               Apply 🎲
             </button>
@@ -90,7 +90,7 @@ export function PaletteBrowser({ onColorSelect, onApply }: PaletteBrowserProps) 
               <button
                 key={color.hex}
                 onClick={() => onColorSelect(color)}
-                className="w-full aspect-square rounded border border-gray-200 hover:scale-110 transition-transform cursor-pointer"
+                className="w-full aspect-square rounded border border-neutral-200 hover:scale-110 transition-transform cursor-pointer"
                 style={{ backgroundColor: color.hex }}
                 title={`${color.name} — ${color.hex}`}
               />

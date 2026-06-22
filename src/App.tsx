@@ -160,8 +160,8 @@ export default function App() {
   })()
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white border-b border-gray-200 px-6 py-4">
+    <div className="min-h-screen bg-neutral-50">
+      <header className="bg-white border-b border-neutral-200 px-6 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <SvgTabBar
             svgs={svgs}
@@ -171,19 +171,19 @@ export default function App() {
           />
           <button
             onClick={handleNewSession}
-            className="ml-3 px-3 py-1 text-xs bg-gray-100 text-gray-500 rounded-full hover:bg-red-100 hover:text-red-600"
+            className="ml-3 px-3 py-1 text-xs bg-neutral-100 text-neutral-500 rounded-full hover:bg-red-100 hover:text-red-600"
           >
             New Session
           </button>
           <button
             onClick={handleExportCss}
-            className="ml-1 px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded-full hover:bg-gray-200"
+            className="ml-1 px-3 py-1 text-xs bg-neutral-100 text-neutral-700 rounded-full hover:bg-neutral-200"
           >
             CSS
           </button>
           <button
             onClick={() => setHelpOpen(true)}
-            className="ml-1 px-3 py-1 text-xs bg-gray-100 text-gray-500 rounded-full hover:bg-gray-200"
+            className="ml-1 px-3 py-1 text-xs bg-neutral-100 text-neutral-500 rounded-full hover:bg-neutral-200"
           >
             ?
           </button>
@@ -209,13 +209,13 @@ export default function App() {
                   <div className="flex gap-2 mb-4">
                     <button
                       onClick={() => setViewTab('svg')}
-                      className={`px-3 py-1 text-xs rounded-full transition-colors ${viewTab === 'svg' ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                      className={`px-3 py-1 text-xs rounded-full transition-colors ${viewTab === 'svg' ? 'bg-primary-500 text-white' : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'}`}
                     >
                       SVG
                     </button>
                     <button
                       onClick={() => setViewTab('theme')}
-                      className={`px-3 py-1 text-xs rounded-full transition-colors ${viewTab === 'theme' ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                      className={`px-3 py-1 text-xs rounded-full transition-colors ${viewTab === 'theme' ? 'bg-primary-500 text-white' : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'}`}
                     >
                       Theme
                     </button>
@@ -237,10 +237,10 @@ export default function App() {
                         className="fixed z-20"
                         style={{ left: pickerPos.x, top: pickerPos.y + 8 }}
                       >
-                        <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-lg w-64">
+                        <div className="bg-white rounded-xl border border-neutral-200 p-4 shadow-lg w-64">
                           <div className="flex items-center justify-between mb-3">
-                            <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">Edit</span>
-                            <button onClick={closePicker} className="text-gray-400 hover:text-gray-600 text-xs">✕</button>
+                            <span className="text-xs font-medium text-neutral-500 uppercase tracking-wide">Edit</span>
+                            <button onClick={closePicker} className="text-neutral-400 hover:text-neutral-600 text-xs">✕</button>
                           </div>
                           <ColorPickerPanel
                             original={selectedEntry.original}
@@ -271,15 +271,15 @@ export default function App() {
 
               {/* RIGHT: Palettes + Edit */}
               <div className="space-y-4 max-h-[calc(100vh-14rem)] overflow-y-auto">
-                <div className="bg-white rounded-xl border border-gray-200 p-4">
-                  <h4 className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-3">Palettes</h4>
+                <div className="bg-white rounded-xl border border-neutral-200 p-4">
+                  <h4 className="text-xs font-medium text-neutral-500 uppercase tracking-wide mb-3">Palettes</h4>
                   <div className="flex gap-2 mb-4">
                     {(['trending', 'harmonies', 'palettes', 'gallery'] as Tab[]).map((t) => (
                       <button
                         key={t}
                         onClick={() => setTab(t)}
                         className={`px-3 py-1 text-xs rounded-full transition-colors
-                          ${tab === t ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                          ${tab === t ? 'bg-primary-500 text-white' : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'}`}
                       >
                         {t === 'trending' ? 'Trending' : t === 'harmonies' ? 'Harmonies' : t === 'palettes' ? 'Palettes' : 'Gallery'}
                       </button>
@@ -312,8 +312,8 @@ export default function App() {
                 </div>
 
                 {selectedEntry && (
-                  <div className="bg-white rounded-xl border border-gray-200 p-4">
-                    <h3 className="text-sm font-medium text-gray-700 mb-3">
+                  <div className="bg-white rounded-xl border border-neutral-200 p-4">
+                    <h3 className="text-sm font-medium text-neutral-700 mb-3">
                       Edit {selectedEntry.normalized}
                     </h3>
                     <ColorPickerPanel
@@ -332,11 +332,11 @@ export default function App() {
 
       <Dialog isOpen={helpOpen} onClose={() => setHelpOpen(false)} title="Keyboard Shortcuts">
         <div className="space-y-2 text-sm">
-          <div className="flex justify-between"><span className="text-gray-600"><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-xs">Ctrl+Z</kbd> Undo</span></div>
-          <div className="flex justify-between"><span className="text-gray-600"><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-xs">Ctrl+Shift+Z</kbd> Redo</span></div>
-          <div className="flex justify-between"><span className="text-gray-600"><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-xs">R</kbd> Reset colors</span></div>
-          <div className="flex justify-between"><span className="text-gray-600"><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-xs">E</kbd> Export SVG</span></div>
-          <div className="flex justify-between"><span className="text-gray-600"><kbd className="px-1.5 py-0.5 bg-gray-100 rounded text-xs">?</kbd> Show this help</span></div>
+          <div className="flex justify-between"><span className="text-neutral-600"><kbd className="px-1.5 py-0.5 bg-neutral-100 rounded text-xs">Ctrl+Z</kbd> Undo</span></div>
+          <div className="flex justify-between"><span className="text-neutral-600"><kbd className="px-1.5 py-0.5 bg-neutral-100 rounded text-xs">Ctrl+Shift+Z</kbd> Redo</span></div>
+          <div className="flex justify-between"><span className="text-neutral-600"><kbd className="px-1.5 py-0.5 bg-neutral-100 rounded text-xs">R</kbd> Reset colors</span></div>
+          <div className="flex justify-between"><span className="text-neutral-600"><kbd className="px-1.5 py-0.5 bg-neutral-100 rounded text-xs">E</kbd> Export SVG</span></div>
+          <div className="flex justify-between"><span className="text-neutral-600"><kbd className="px-1.5 py-0.5 bg-neutral-100 rounded text-xs">?</kbd> Show this help</span></div>
         </div>
       </Dialog>
     </div>

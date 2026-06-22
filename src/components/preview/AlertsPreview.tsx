@@ -7,7 +7,7 @@ export function AlertsPreview({ primary, secondary, accent }: ComponentPreviewPr
       style={{ backgroundColor: bg + '10', borderLeftColor: bg }}
     >
       <p className="text-sm font-medium" style={{ color: bg }}>{title}</p>
-      <p className="text-xs text-gray-500">{msg}</p>
+      <p className="text-xs text-neutral-500">{msg}</p>
     </div>
   )
 

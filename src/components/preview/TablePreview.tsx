@@ -10,7 +10,7 @@ export function TablePreview({ primary, secondary, accent }: ComponentPreviewPro
   ]
 
   return (
-    <div className="overflow-x-auto rounded-xl border border-gray-200">
+    <div className="overflow-x-auto rounded-xl border border-neutral-200">
       <table className="w-full text-sm">
         <thead>
           <tr style={{ backgroundColor: primary, color: textColor(primary) }}>
@@ -21,7 +21,7 @@ export function TablePreview({ primary, secondary, accent }: ComponentPreviewPro
         </thead>
         <tbody>
           {data.map((row) => (
-            <tr key={row.name} className="border-t border-gray-100 transition-colors hover:bg-gray-50">
+            <tr key={row.name} className="border-t border-neutral-100 transition-colors hover:bg-neutral-50">
               <td className="px-4 py-3">{row.name}</td>
               <td className="px-4 py-3">
                 <span

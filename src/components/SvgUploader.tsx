@@ -34,7 +34,7 @@ export function SvgUploader({ onFile, hasFile }: SvgUploaderProps) {
       onDrop={handleDrop}
       onClick={() => inputRef.current?.click()}
       className={`border-2 border-dashed rounded-xl p-12 text-center cursor-pointer transition-all duration-200
-        ${isDragging ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-300 ring-offset-2 shadow-lg shadow-blue-100' : hasFile ? 'border-gray-200 bg-gray-50/50' : 'border-gray-300 hover:border-gray-400 hover:shadow-md'}`}
+        ${isDragging ? 'border-primary-500 bg-primary-50 ring-2 ring-primary-300 ring-offset-2 shadow-lg shadow-primary-100' : hasFile ? 'border-neutral-200 bg-neutral-50/50' : 'border-neutral-300 hover:border-neutral-400 hover:shadow-md'}`}
     >
       <input
         ref={inputRef}
@@ -44,12 +44,12 @@ export function SvgUploader({ onFile, hasFile }: SvgUploaderProps) {
         className="hidden"
       />
       <div className="flex flex-col items-center gap-3">
-        <svg className="w-12 h-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg className="w-12 h-12 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
             d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
         </svg>
-        <p className="text-lg font-medium text-gray-700">Drop an SVG file here</p>
-        <p className="text-sm text-gray-500">or click to browse</p>
+        <p className="text-lg font-medium text-neutral-700">Drop an SVG file here</p>
+        <p className="text-sm text-neutral-500">or click to browse</p>
       </div>
     </div>
   )

@@ -36,8 +36,8 @@ export function Dialog({ isOpen, onClose, title, children }: DialogProps) {
       onClick={(e) => { if (e.target === overlayRef.current) onClose() }}
     >
       <div className="bg-white rounded-xl shadow-xl max-w-lg w-full mx-4 max-h-[85vh] overflow-y-auto">
-        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-800">{title}</h2>
+        <div className="flex items-center justify-between px-5 py-4 border-b border-neutral-200">
+          <h2 className="text-lg font-semibold text-neutral-800">{title}</h2>
           <Button variant="ghost" size="sm" onClick={onClose} aria-label="Close dialog">
             ✕
           </Button>

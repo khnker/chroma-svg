@@ -5,12 +5,12 @@ export function TabsPreview({ primary, secondary }: ComponentPreviewProps) {
   const tabs = ['Tab A', 'Tab B', 'Tab C']
   return (
     <div className="space-y-3 max-w-md">
-      <p className="text-xs text-gray-400 mb-1">Tabs / Pills</p>
-      <div className="flex gap-1 border-b border-gray-200">
+      <p className="text-xs text-neutral-400 mb-1">Tabs / Pills</p>
+      <div className="flex gap-1 border-b border-neutral-200">
         {tabs.map((t, i) => (
           <button
             key={t}
-            className={`px-4 py-2 text-xs font-medium border-b-2 transition-colors ${i === 0 ? '' : 'text-gray-500 border-transparent hover:text-gray-700'}`}
+            className={`px-4 py-2 text-xs font-medium border-b-2 transition-colors ${i === 0 ? '' : 'text-neutral-500 border-transparent hover:text-neutral-700'}`}
             style={i === 0 ? { color: primary, borderColor: primary } : undefined}
           >
             {t}
@@ -40,12 +40,12 @@ export function StatsPreview({ primary, secondary, accent }: ComponentPreviewPro
   ]
   return (
     <div className="space-y-3">
-      <p className="text-xs text-gray-400 mb-1">Stats</p>
+      <p className="text-xs text-neutral-400 mb-1">Stats</p>
       <div className="grid grid-cols-3 gap-3">
         {stats.map((s) => (
           <div key={s.label} className="rounded-xl border p-3 text-center" style={{ borderColor: s.color + '30' }}>
             <p className="text-lg font-bold" style={{ color: s.color }}>{s.value}</p>
-            <p className="text-xs text-gray-500">{s.label}</p>
+            <p className="text-xs text-neutral-500">{s.label}</p>
           </div>
         ))}
       </div>
