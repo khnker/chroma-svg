@@ -529,9 +529,17 @@ function SidebarContent({
 
       <div className="bg-white rounded-xl border border-neutral-200 shadow-sm p-4">
         {tab === 'palettes' && (
-          <section>
+          <section className="space-y-4">
+            <button
+              onClick={onExtractClick}
+              disabled={extracting}
+              className="w-full px-4 py-2.5 text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 rounded-lg transition-colors disabled:opacity-50"
+            >
+              {extracting ? 'Extracting…' : 'From Image'}
+            </button>
+
             {customPalettes.length > 0 && (
-              <div className="mb-4">
+              <div>
                 <p className="text-[11px] text-neutral-400 mb-2">
                   Custom palettes from images &mdash; click to apply
                 </p>
@@ -563,17 +571,10 @@ function SidebarContent({
                 </div>
               </div>
             )}
-            <div className="flex items-center justify-between mb-3">
-              <p className="text-[11px] text-neutral-400">Trending palettes from Coolors &mdash; import your own</p>
-              <button
-                onClick={onExtractClick}
-                disabled={extracting}
-                className="px-3 py-1.5 text-[11px] font-medium text-white bg-primary-500 hover:bg-primary-600 rounded-lg transition-colors disabled:opacity-50"
-              >
-                {extracting ? 'Extracting…' : 'From Image'}
-              </button>
-            </div>
+            <div>
+              <p className="text-[11px] text-neutral-400 mb-3">Trending palettes from Coolors &mdash; import your own</p>
             <TrendingPalettes onApply={handleApplyPalette} selectedPalette={lastAppliedPalette} />
+            </div>
           </section>
         )}
 
