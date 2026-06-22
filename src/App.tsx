@@ -248,7 +248,7 @@ export default function App() {
                 </div>
               )}
               <div className="flex items-center gap-1 shrink-0">
-                <Tooltip content="Import another SVG file">
+                <Tooltip content="Add another SVG file">
                   <button
                     onClick={() => document.getElementById('svg-file-input')?.click()}
                     className="min-w-[44px] h-9 px-3 flex items-center justify-center text-xs font-medium text-neutral-600 bg-neutral-100 hover:bg-neutral-200 rounded-lg transition-all active:scale-95"
@@ -256,26 +256,10 @@ export default function App() {
                     <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
                     </svg>
-                    Import
+                    Add
                   </button>
                 </Tooltip>
-                <Tooltip content="Export (Cmd+E)">
-                  <button
-                    onClick={() => setExportOpen(true)}
-                    className="min-w-[44px] h-9 px-3 flex items-center justify-center text-xs font-medium text-white bg-accent-500 hover:bg-accent-600 rounded-lg transition-all active:scale-95 shadow-sm"
-                  >
-                    Export
-                  </button>
-                </Tooltip>
-                <Tooltip content="Reset all colors (R)">
-                  <button
-                    onClick={handleReset}
-                    className="min-w-[44px] h-9 px-3 flex items-center justify-center text-xs font-medium text-neutral-600 bg-neutral-100 hover:bg-neutral-200 rounded-lg transition-all active:scale-95"
-                  >
-                    Reset
-                  </button>
-                </Tooltip>
-                <Tooltip content="Keyboard shortcuts (?)">
+                <Tooltip content="Help (?)">
                   <button
                     onClick={() => setHelpOpen(true)}
                     className="min-w-[44px] h-9 flex items-center justify-center text-xs font-bold text-neutral-500 bg-neutral-100 hover:bg-neutral-200 rounded-lg transition-all active:scale-95"
