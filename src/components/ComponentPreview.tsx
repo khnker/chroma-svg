@@ -20,7 +20,7 @@ const SECTIONS: { id: string; label: string; Component: FC<ComponentPreviewProps
 
 export function ComponentPreview({ primary, secondary, accent }: ComponentPreviewProps) {
   return (
-    <div className="bg-white rounded-xl border border-neutral-200 p-4">
+    <div className="bg-white rounded-xl border border-neutral-200 shadow-sm p-4">
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-sm font-medium text-neutral-700">Theme Preview</h3>
         <div className="flex gap-2">

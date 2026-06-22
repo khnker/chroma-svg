@@ -24,13 +24,56 @@
   --color-neutral-800: #1E293B;
   --color-neutral-900: #0F172A;
   --color-neutral-950: #020617;
+
+  --font-sans: "Inter", "system-ui", sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", monospace;
+
+  --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+  --shadow-card-hover: 0 4px 12px 0 rgba(0, 0, 0, 0.08), 0 2px 4px 0 rgba(0, 0, 0, 0.04);
+  --shadow-modal: 0 20px 60px 0 rgba(0, 0, 0, 0.12), 0 8px 20px 0 rgba(0, 0, 0, 0.06);
+
+  --radius-card: 0.75rem;
+  --radius-button: 0.5rem;
+  --radius-input: 0.5rem;
+  --radius-pill: 9999px;
+}
+
+@layer base {
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  *:focus-visible {
+    outline: 2px solid var(--color-primary-400);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background-color: var(--color-primary-100);
+    color: var(--color-primary-900);
+  }
 }
 
 @keyframes slide-up {
-  from { transform: translateY(1rem); opacity: 0; }
+  from { transform: translateY(0.5rem); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
 
 @utility animate-slide-up {
   animation: slide-up 0.2s ease-out;
+}
+
+@utility card {
+  background-color: var(--color-white);
+  border: 1px solid var(--color-neutral-200);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+}
+
+@utility card-hover {
+  &:hover {
+    border-color: var(--color-neutral-300);
+    box-shadow: var(--shadow-card-hover);
+  }
 }

@@ -25,7 +25,7 @@ export function TrendingPalettes({ onApply }: TrendingPalettesProps) {
           {palettes.map((p) => (
             <div
               key={p.id}
-              className="group relative rounded-lg border border-neutral-200 overflow-hidden hover:border-neutral-300 transition-colors"
+              className="group relative rounded-xl border border-neutral-200 bg-white shadow-sm overflow-hidden hover:border-neutral-300 hover:shadow-md transition-all"
             >
               <div className="flex h-10">
                 {p.hexes.map((c, i) => (
@@ -37,7 +37,7 @@ export function TrendingPalettes({ onApply }: TrendingPalettesProps) {
                   onClick={() => onApply(p.hexes)}
                   className="px-3 py-1 text-xs bg-white text-neutral-800 rounded-lg shadow-md font-medium hover:bg-neutral-50"
                 >
-                  Apply 🎲
+                  Apply
                 </button>
               </div>
               <div className="px-2 py-1">

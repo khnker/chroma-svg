@@ -61,7 +61,7 @@ function PaletteCard({
   disabled?: boolean
 }) {
   return (
-    <div className="rounded-lg border border-neutral-200 p-3 hover:border-neutral-300 transition-colors">
+    <div className="rounded-xl border border-neutral-200 bg-white shadow-sm p-3 hover:border-neutral-300 hover:shadow-md transition-all">
       <div className="flex items-center justify-between mb-2">
         <div>
           <h4 className="text-sm font-medium text-neutral-800">{palette.name}</h4>
@@ -73,7 +73,7 @@ function PaletteCard({
           className="px-3 py-1 text-xs rounded-md text-white font-medium transition-opacity hover:opacity-90 disabled:opacity-40"
           style={{ backgroundColor: palette.colors[0] }}
         >
-          Apply 🎲
+          Apply
         </button>
       </div>
       <p className="text-[10px] text-neutral-400 mb-2">{palette.description}</p>

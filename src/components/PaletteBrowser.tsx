@@ -61,7 +61,7 @@ export function PaletteBrowser({ onColorSelect, onApply }: PaletteBrowserProps) 
               onClick={() => onApply(imported)}
               className="px-3 py-1 text-xs bg-neutral-800 text-white rounded-lg hover:bg-neutral-900"
             >
-              Apply 🎲
+              Apply
             </button>
           </div>
         )}
@@ -82,7 +82,7 @@ export function PaletteBrowser({ onColorSelect, onApply }: PaletteBrowserProps) 
               onClick={() => onApply(palette.colors.map((c) => c.hex))}
               className="px-2.5 py-1 text-xs bg-neutral-800 text-white rounded-lg hover:bg-neutral-900"
             >
-              Apply 🎲
+              Apply
             </button>
           </div>
           <div className="grid grid-cols-10 gap-1">

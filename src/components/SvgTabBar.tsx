@@ -22,9 +22,9 @@ export function SvgTabBar({ svgs, activeId, onSelect, onClose }: SvgTabBarProps)
           {svg.fileName}
           <span
             onClick={(e) => { e.stopPropagation(); onClose(svg.id) }}
-            className="ml-2 cursor-pointer hover:text-red-500"
+            className="ml-1.5 w-4 h-4 inline-flex items-center justify-center rounded-full text-[10px] hover:bg-black/10 hover:text-red-500 transition-colors"
           >
-            ×
+            ✕
           </span>
         </button>
       ))}

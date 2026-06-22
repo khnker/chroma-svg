@@ -16,6 +16,7 @@ import { useColorMap } from './hooks/useColorMap'
 import { usePreview } from './hooks/usePreview'
 import { useUrlState } from './hooks/useUrlState'
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
+import { Logo } from './components/Logo'
 import { Dialog } from './components/ui/Dialog'
 import { isNearBlackOrWhite, getAdjacentContrastPairs } from './lib/color-utils'
 import { homogenizeColorMap } from './lib/homogenize'
@@ -161,36 +162,46 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-neutral-50">
-      <header className="bg-white border-b border-neutral-200 px-6 py-4">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <SvgTabBar
-            svgs={svgs}
-            activeId={activeSvg?.id ?? null}
-            onSelect={setActive}
-            onClose={removeSvg}
-          />
-          <button
-            onClick={handleNewSession}
-            className="ml-3 px-3 py-1 text-xs bg-neutral-100 text-neutral-500 rounded-full hover:bg-red-100 hover:text-red-600"
-          >
-            New Session
-          </button>
-          <button
-            onClick={handleExportCss}
-            className="ml-1 px-3 py-1 text-xs bg-neutral-100 text-neutral-700 rounded-full hover:bg-neutral-200"
-          >
-            CSS
-          </button>
-          <button
-            onClick={() => setHelpOpen(true)}
-            className="ml-1 px-3 py-1 text-xs bg-neutral-100 text-neutral-500 rounded-full hover:bg-neutral-200"
-          >
-            ?
-          </button>
+      <header className="bg-white/90 backdrop-blur-md border-b border-neutral-200 sticky top-0 z-40">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="flex items-center h-14 gap-4">
+            <div className="flex items-center gap-2.5 shrink-0">
+              <Logo size={28} />
+              <span className="text-sm font-semibold text-neutral-800 tracking-tight">Chroma</span>
+            </div>
+            <div className="flex-1 min-w-0">
+              <SvgTabBar
+                svgs={svgs}
+                activeId={activeSvg?.id ?? null}
+                onSelect={setActive}
+                onClose={removeSvg}
+              />
+            </div>
+            <div className="flex items-center gap-1.5 shrink-0">
+              <button
+                onClick={handleNewSession}
+                className="px-2.5 py-1 text-xs font-medium bg-neutral-100 text-neutral-600 rounded-lg hover:bg-red-100 hover:text-red-600 transition-colors"
+              >
+                New
+              </button>
+              <button
+                onClick={handleExportCss}
+                className="px-2.5 py-1 text-xs font-medium bg-neutral-100 text-neutral-600 rounded-lg hover:bg-neutral-200 transition-colors"
+              >
+                CSS
+              </button>
+              <button
+                onClick={() => setHelpOpen(true)}
+                className="w-7 h-7 flex items-center justify-center text-xs font-medium bg-neutral-100 text-neutral-500 rounded-lg hover:bg-neutral-200 transition-colors"
+              >
+                ?
+              </button>
+            </div>
+          </div>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto p-6">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-5">
         {!hasSvgs && <SvgUploader onFile={loadFile} hasFile={false} />}
 
         {loaderError && (
@@ -271,7 +282,7 @@ export default function App() {
 
               {/* RIGHT: Palettes + Edit */}
               <div className="space-y-4 max-h-[calc(100vh-14rem)] overflow-y-auto">
-                <div className="bg-white rounded-xl border border-neutral-200 p-4">
+                <div className="bg-white rounded-xl border border-neutral-200 shadow-sm p-4">
                   <h4 className="text-xs font-medium text-neutral-500 uppercase tracking-wide mb-3">Palettes</h4>
                   <div className="flex gap-2 mb-4">
                     {(['trending', 'harmonies', 'palettes', 'gallery'] as Tab[]).map((t) => (
@@ -312,7 +323,7 @@ export default function App() {
                 </div>
 
                 {selectedEntry && (
-                  <div className="bg-white rounded-xl border border-neutral-200 p-4">
+                  <div className="bg-white rounded-xl border border-neutral-200 shadow-sm p-4">
                     <h3 className="text-sm font-medium text-neutral-700 mb-3">
                       Edit {selectedEntry.normalized}
                     </h3>

@@ -14,7 +14,7 @@ export function ThemePreview({ colorMap, svgName = 'colors' }: ThemePreviewProps
   const css = generateTailwindTokens(colorMap)
 
   return (
-    <div className="border rounded-xl bg-white h-[600px] overflow-y-auto">
+    <div className="border rounded-xl bg-white shadow-sm h-[600px] overflow-y-auto">
       <div className="sticky top-0 z-10 bg-white/95 backdrop-blur border-b flex items-center justify-between px-4 py-2">
         <span className="text-sm text-neutral-500 font-mono">{svgName}-tokens.css</span>
         <div className="flex items-center gap-2">

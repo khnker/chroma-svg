@@ -74,7 +74,7 @@ export function SvgPreview({ svgContent, fileName, onReset, onColorClick }: SvgP
           </button>
         </div>
       </div>
-      <div className="border rounded-xl p-4 bg-white flex items-center justify-center h-[600px] overflow-auto">
+      <div className="border rounded-xl p-4 bg-white shadow-sm flex items-center justify-center h-[600px] overflow-auto">
         <div
           style={{ transform: `scale(${zoom})`, transformOrigin: 'center center' }}
           dangerouslySetInnerHTML={{ __html: svgContent }}

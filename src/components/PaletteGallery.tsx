@@ -40,7 +40,7 @@ function GalleryCard({
 
   return (
     <div
-      className="rounded-lg border border-neutral-200 overflow-hidden hover:border-neutral-300 hover:shadow-sm transition-all"
+      className="rounded-xl border border-neutral-200 overflow-hidden hover:border-neutral-300 hover:shadow-md transition-all"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
@@ -57,7 +57,7 @@ function GalleryCard({
               onClick={() => onApply(item.paletteColors)}
               className="px-4 py-2 text-xs bg-white text-neutral-800 rounded-lg shadow-md font-medium hover:bg-neutral-50"
             >
-              Apply 🎲
+              Apply
             </button>
           </div>
         )}

@@ -65,7 +65,7 @@ export function TriChromeView({ colors, onApply }: TriChromeViewProps) {
       </p>
       <div className="space-y-3">
         {palettes.map((palette) => (
-          <div key={palette.name} className="rounded-lg border border-neutral-200 p-3 hover:border-neutral-300 transition-colors">
+          <div key={palette.name} className="rounded-xl border border-neutral-200 bg-white shadow-sm p-3 hover:border-neutral-300 hover:shadow-md transition-all">
             <div className="flex items-center justify-between mb-2">
               <h4 className="text-sm font-medium text-neutral-800">{palette.name}</h4>
               <button
@@ -73,7 +73,7 @@ export function TriChromeView({ colors, onApply }: TriChromeViewProps) {
                 className="px-3 py-1 text-xs rounded-md text-white font-medium transition-opacity hover:opacity-90"
                 style={{ backgroundColor: palette.colors[0] }}
               >
-                Apply 🎲
+                Apply
               </button>
             </div>
             <div className="flex gap-1">
