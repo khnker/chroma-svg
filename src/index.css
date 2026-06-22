@@ -13,6 +13,30 @@
   --color-primary-900: #3B0764;
   --color-primary-950: #1E0033;
 
+  --color-accent-50: #EDFCF4;
+  --color-accent-100: #D1FAE5;
+  --color-accent-200: #A7F3D0;
+  --color-accent-300: #6EE7B7;
+  --color-accent-400: #34D399;
+  --color-accent-500: #10B981;
+  --color-accent-600: #059669;
+  --color-accent-700: #047857;
+  --color-accent-800: #065F46;
+  --color-accent-900: #064E3B;
+  --color-accent-950: #022C22;
+
+  --color-tertiary-50: #FFF7ED;
+  --color-tertiary-100: #FFEDD5;
+  --color-tertiary-200: #FED7AA;
+  --color-tertiary-300: #FDBA74;
+  --color-tertiary-400: #FB923C;
+  --color-tertiary-500: #F97316;
+  --color-tertiary-600: #EA580C;
+  --color-tertiary-700: #C2410C;
+  --color-tertiary-800: #9A3412;
+  --color-tertiary-900: #7C2D12;
+  --color-tertiary-950: #431407;
+
   --color-neutral-50: #F8FAFC;
   --color-neutral-100: #F1F5F9;
   --color-neutral-200: #E2E8F0;

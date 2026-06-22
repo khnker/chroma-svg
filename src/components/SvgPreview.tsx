@@ -63,13 +63,13 @@ export function SvgPreview({ svgContent, fileName, onReset, onColorClick }: SvgP
           <div className="w-px h-5 bg-neutral-200 mx-1" />
           <button
             onClick={handleDownload}
-            className="px-3 py-1 text-xs font-medium text-white bg-primary-500 hover:bg-primary-600 rounded-lg transition-colors"
+            className="px-3 py-1 text-xs font-medium text-white bg-accent-500 hover:bg-accent-600 rounded-lg transition-colors"
           >
             Download
           </button>
           <button
             onClick={onReset}
-            className="px-3 py-1 text-xs font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors"
+            className="px-3 py-1 text-xs font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors ring-1 ring-red-200/50"
           >
             Reset
           </button>

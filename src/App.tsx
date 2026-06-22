@@ -70,26 +70,30 @@ export default function App() {
   const { previewSvg } = usePreview(activeSvg?.raw ?? null, previewColorMap)
   const galleries = usePaletteGallery(activeSvg?.raw ?? null, colors, contrastMap)
 
-  // ── Site theme (reactivo: sigue colorMap + homogenize) ──
+  // ── Site theme (3 colores dominantes → primary/accent/tertiary) ──
   const siteTheme = useMemo(() => {
     if (colors.length === 0) return {}
     const sorted = [...colors].sort((a, b) => b.elementCount - a.elementCount)
-    const dominant = previewColorMap[sorted[0].original] ?? sorted[0].normalized
-    const scale = generateColorScale(dominant)
-    if (!scale) return {}
-    return {
-      '--color-primary-50': scale['50'],
-      '--color-primary-100': scale['100'],
-      '--color-primary-200': scale['200'],
-      '--color-primary-300': scale['300'],
-      '--color-primary-400': scale['400'],
-      '--color-primary-500': scale['500'],
-      '--color-primary-600': scale['600'],
-      '--color-primary-700': scale['700'],
-      '--color-primary-800': scale['800'],
-      '--color-primary-900': scale['900'],
-      '--color-primary-950': scale['950'],
+    const top3 = [0, 1, 2].map(i => {
+      const c = sorted[i]
+      if (!c) return null
+      return previewColorMap[c.original] ?? c.normalized
+    }) as (string | null)[]
+    const [c1, c2, c3] = top3
+    if (!c1) return {}
+    const scale = (hex: string) => generateColorScale(hex) ?? {}
+    const s1 = scale(c1); const s2 = c2 ? scale(c2) : {}; const s3 = c3 ? scale(c3) : {}
+    const fill = (s: Record<string, string>, hex: string) => (stop: string) => s[stop] ?? hex
+    const f1 = fill(s1, c1); const f2 = fill(s2, c2 ?? c1); const f3 = fill(s3, c3 ?? c1)
+    const stops = ['50','100','200','300','400','500','600','700','800','900','950'] as const
+    const prefix = ['primary', 'accent', 'tertiary']
+    const colors = [c1, c2 ?? c1, c3 ?? c1]
+    const scales = [f1, f2, f3]
+    const vars: Record<string, string> = {}
+    for (let i = 0; i < 3; i++) {
+      for (const s of stops) { vars[`--color-${prefix[i]}-${s}`] = scales[i](s) }
     }
+    return vars
   }, [previewColorMap, colors])
 
   // ── Persist ──
@@ -220,8 +224,10 @@ export default function App() {
       style={siteTheme as React.CSSProperties}
     >
 
-      {/* ── Header ── */}
-      <header className="sticky top-0 z-40 bg-white/70 backdrop-blur-xl border-b border-neutral-200/60">
+      {/* ── Header (gradiente sutil primary→accent) ── */}
+      <header className="sticky top-0 z-40 bg-white/70 backdrop-blur-xl border-b border-neutral-200/60"
+        style={{ backgroundImage: 'linear-gradient(135deg, color-mix(in srgb, var(--color-primary-500) 6%, white), color-mix(in srgb, var(--color-accent-500) 4%, white))' }}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3 shrink-0">
             <Logo size={28} />
@@ -244,14 +250,14 @@ export default function App() {
                 </div>
               )}
               <div className="flex items-center gap-1 shrink-0">
-                <Tooltip content="Export (Cmd+E)">
-                  <button
-                    onClick={() => setExportOpen(true)}
-                    className="min-w-[44px] h-9 px-3 flex items-center justify-center text-xs font-medium text-white bg-primary-500 hover:bg-primary-600 rounded-lg transition-all active:scale-95 shadow-sm"
-                  >
-                    Export
-                  </button>
-                </Tooltip>
+                  <Tooltip content="Export (Cmd+E)">
+                    <button
+                      onClick={() => setExportOpen(true)}
+                      className="min-w-[44px] h-9 px-3 flex items-center justify-center text-xs font-medium text-white bg-accent-500 hover:bg-accent-600 rounded-lg transition-all active:scale-95 shadow-sm"
+                    >
+                      Export
+                    </button>
+                  </Tooltip>
                 <Tooltip content="Reset all colors (R)">
                   <button
                     onClick={handleReset}
@@ -286,7 +292,9 @@ export default function App() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 animate-fade-in">
 
         {!hasSvgs && (
-          <SvgUploader onFile={loadFile} hasFile={false} />
+          <SvgUploader onFile={loadFile} onImagePalette={(colors) => {
+            if (colors.length > 0) handleApplyPalette(colors, 'image')
+          }} hasFile={false} />
         )}
 
         {loaderError && (
@@ -319,7 +327,7 @@ export default function App() {
                 <Tooltip content="Export recolored SVG">
                   <button
                     onClick={() => setExportOpen(true)}
-                    className="min-w-[44px] h-9 px-3 flex items-center justify-center text-xs font-medium text-white bg-primary-500 hover:bg-primary-600 rounded-lg transition-all active:scale-95 shadow-sm"
+                    className="min-w-[44px] h-9 px-3 flex items-center justify-center text-xs font-medium text-white bg-accent-500 hover:bg-accent-600 rounded-lg transition-all active:scale-95 shadow-sm"
                   >
                     Export
                   </button>

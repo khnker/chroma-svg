@@ -14,8 +14,8 @@ export function Logo({ size = 32 }: { size?: number }) {
       <circle cx="20" cy="13" r="5" fill="currentColor" opacity="0.3" className="text-primary-400" />
       <circle cx="16" cy="21" r="5" fill="currentColor" opacity="0.3" className="text-primary-400" />
       <circle cx="12.5" cy="14" r="3" fill="currentColor" className="text-primary-400" />
-      <circle cx="19.5" cy="14" r="3" fill="currentColor" className="text-pink-400" />
-      <circle cx="16" cy="20" r="3" fill="currentColor" className="text-amber-400" />
+      <circle cx="19.5" cy="14" r="3" fill="currentColor" className="text-accent-400" />
+      <circle cx="16" cy="20" r="3" fill="currentColor" className="text-tertiary-400" />
     </svg>
   )
 }

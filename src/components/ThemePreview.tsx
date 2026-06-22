@@ -26,7 +26,7 @@ export function ThemePreview({ colorMap, svgName = 'colors' }: ThemePreviewProps
           </button>
           <button
             onClick={() => downloadCssTokens(colorMap, svgName)}
-            className="px-3 py-1 text-xs font-medium text-white bg-primary-500 hover:bg-primary-600 rounded-lg transition-colors"
+            className="px-3 py-1 text-xs font-medium text-white bg-accent-500 hover:bg-accent-600 rounded-lg transition-colors"
           >
             Download CSS
           </button>
