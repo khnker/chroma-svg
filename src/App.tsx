@@ -490,7 +490,7 @@ function SidebarContent({
         {tab === 'trending' && (
           <section>
             <p className="text-[11px] text-neutral-400 mb-3">Popular color palettes from the community</p>
-            <TrendingPalettes onApply={handleApplyPalette} />
+                    <TrendingPalettes onApply={handleApplyPalette} selectedPalette={lastAppliedPalette} />
           </section>
         )}
 
@@ -519,7 +519,7 @@ function SidebarContent({
         {tab === 'gallery' && (
           <section>
             <p className="text-[11px] text-neutral-400 mb-3">Preview your SVG with different color combinations</p>
-            <PaletteGallery galleries={galleries} onApplyPalette={handleApplyPalette} />
+                    <PaletteGallery galleries={galleries} onApplyPalette={handleApplyPalette} selectedPalette={lastAppliedPalette} />
           </section>
         )}
       </div>
