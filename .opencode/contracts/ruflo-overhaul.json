@@ -1,0 +1,104 @@
+{
+  "feature": "ruflo-overhaul",
+  "version": "1.0",
+  "phases": [
+    {
+      "id": 0,
+      "name": "Quick Fixes",
+      "files": [
+        "src/hooks/useSvgLoader.ts",
+        "src/hooks/useColorExtractor.ts",
+        "src/lib/palettes/index.ts",
+        "src/hooks/usePalettes.ts"
+      ],
+      "invariant": "npm run build must pass"
+    },
+    {
+      "id": 1,
+      "name": "Data Layer: Undo/Redo + Multi-SVG + URL State",
+      "subphases": ["1a: undo/redo in useColorMap", "1b: useMultiSvg hook + SvgEntry type", "1c: useUrlState hook"],
+      "files": [
+        "src/hooks/useColorMap.ts",
+        "src/hooks/useMultiSvg.ts",
+        "src/hooks/useUrlState.ts",
+        "src/hooks/useSvgLoader.ts",
+        "src/hooks/useColorExtractor.ts",
+        "src/core/types.ts",
+        "src/App.tsx"
+      ],
+      "new_deps": ["lz-string"]
+    },
+    {
+      "id": 2,
+      "name": "Core Refactor",
+      "subphases": ["2a: split color-extractor into dom-traversal + css-extractor", "2b: add downloadSvg export"],
+      "files": [
+        "src/core/color-extractor.ts",
+        "src/core/dom-traversal.ts",
+        "src/core/css-extractor.ts",
+        "src/core/color-replacer.ts"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "UI Primitives & Loading/Drag",
+      "files": [
+        "src/components/ui/Button.tsx",
+        "src/components/ui/Dialog.tsx",
+        "src/components/ui/Toast.tsx",
+        "src/components/ui/Tooltip.tsx",
+        "src/components/LoadingSkeleton.tsx",
+        "src/components/SvgUploader.tsx",
+        "src/components/SvgPreview.tsx",
+        "src/components/ColorList.tsx"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Feature Polish",
+      "files": [
+        "src/hooks/useKeyboardShortcuts.ts",
+        "src/components/SvgTabBar.tsx",
+        "src/App.tsx",
+        "src/components/ComponentPreview.tsx"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Testing",
+      "files": [
+        "src/__tests__/core/color-replacer.test.ts",
+        "src/__tests__/core/color-extractor.test.ts",
+        "src/__tests__/core/dom-traversal.test.ts",
+        "src/__tests__/core/color-theory.test.ts",
+        "src/__tests__/hooks/useSvgLoader.test.ts",
+        "src/__tests__/hooks/useColorMap.test.ts",
+        "src/__tests__/hooks/useColorMap.undo.test.ts",
+        "src/__tests__/hooks/usePreview.test.ts",
+        "src/__tests__/hooks/useMultiSvg.test.ts",
+        "src/__tests__/components/SvgUploader.test.tsx",
+        "src/__tests__/components/ColorList.test.tsx",
+        "src/__tests__/components/ColorPickerPanel.test.tsx",
+        "src/__tests__/components/SvgPreview.test.tsx",
+        "src/__tests__/components/ColorSwatch.test.tsx",
+        "src/e2e/basic-flow.spec.ts",
+        "src/e2e/multi-svg.spec.ts",
+        "src/e2e/undo-redo.spec.ts",
+        "src/e2e/keyboard-shortcuts.spec.ts"
+      ]
+    }
+  ],
+  "deleted_files": ["src/lib/palettes/index.ts"],
+  "invariants": [
+    "ColorMap ≡ Record<string, string> — nunca cambiar shape",
+    "SVG I/O pipeline: rawString → DOMParser → modify → XMLSerializer → string",
+    "extractColors() siempre retorna ColorEntry[] sorted by elementCount desc",
+    "previewSvg = useMemo(() => applyColorMap(rawSvg, colorMap), [rawSvg, colorMap])",
+    "Multi-SVG: activeIndex ∈ [0, svgs.length-1], inválido después de removeSvg",
+    "URL hash: one-way init + debounced push (no ciclo)",
+    "Undo/redo: bounded 50 entries, updateColor tras undo → descarta redo stack",
+    "Keyboard shortcuts: disabled cuando activeElement es input/textarea/select",
+    "No nuevas dependencias npm — solo browser APIs + culori + react-colorful + lz-string",
+    "ComponentPreview split: NO cambiar lógica interna de renderizado, solo mover a archivos"
+  ]
+}

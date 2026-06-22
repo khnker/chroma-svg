@@ -1,0 +1,74 @@
+{
+  "feature": "Contrast Map & Smart Palette Assignment",
+  "status": "approved",
+  "parallel": false,
+  "layers": ["fe"],
+  "files": {
+    "modify": [
+      "src/core/types.ts",
+      "src/core/color-extractor.ts",
+      "src/hooks/useColorExtractor.ts",
+      "src/hooks/useColorMap.ts",
+      "src/hooks/usePaletteGallery.ts",
+      "src/components/ColorList.tsx",
+      "src/App.tsx"
+    ],
+    "create": [
+      "src/lib/contrast-map.ts",
+      "src/lib/contrast-map.test.ts"
+    ]
+  },
+  "invariants": [
+    "ColorMap remains Record<string, string>",
+    "extractColors returns ColorEntry[] sorted by areaWeight desc",
+    "No new npm dependencies",
+    "No API layer changes"
+  ],
+  "implementation_plan": [
+    {
+      "step": 1,
+      "file": "src/core/types.ts",
+      "description": "Add ContrastEdge, ContrastMap, ContrastWarning types"
+    },
+    {
+      "step": 2,
+      "file": "src/lib/contrast-map.ts",
+      "description": "Create core module: getElementBounds, boxesOverlap, buildContrastMap, scorePaletteFit, bestMapping, getContrastWarnings"
+    },
+    {
+      "step": 3,
+      "file": "src/lib/contrast-map.test.ts",
+      "description": "16 test cases covering bounds, overlap, adjacency, scoring, warnings"
+    },
+    {
+      "step": 4,
+      "file": "src/core/color-extractor.ts",
+      "description": "Return ContrastMap alongside ColorEntry[] in ExtractResult"
+    },
+    {
+      "step": 5,
+      "file": "src/hooks/useColorExtractor.ts",
+      "description": "Thread contrastMap into hook state"
+    },
+    {
+      "step": 6,
+      "file": "src/hooks/useColorMap.ts",
+      "description": "Add applySmartPalette using bestMapping"
+    },
+    {
+      "step": 7,
+      "file": "src/hooks/usePaletteGallery.ts",
+      "description": "Use bestMapping for gallery previews, add contrastWarnings to items"
+    },
+    {
+      "step": 8,
+      "file": "src/components/ColorList.tsx",
+      "description": "Show contrast warning badges per color"
+    },
+    {
+      "step": 9,
+      "file": "src/App.tsx",
+      "description": "Wire contrastMap through component hierarchy"
+    }
+  ]
+}
