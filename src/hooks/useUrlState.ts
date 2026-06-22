@@ -1,47 +1,37 @@
-import { useState, useCallback, useRef, useEffect } from 'react'
+import { useCallback, useRef, useEffect } from 'react'
 import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from 'lz-string'
-import type { SvgEntry, ColorMap } from '@/core/types'
+import type { ColorMap } from '@/core/types'
 
-const MAX_HASH_BYTES = 32000
-
-interface StoredState {
-  svgs: { raw: string; fileName: string }[]
+interface HashState {
+  raw: string
+  fileName: string
   colorMap: ColorMap
 }
 
 export function useUrlState() {
-  const [initialState] = useState<StoredState | null>(() => {
+  const initialState = (() => {
     try {
       const hash = window.location.hash.slice(1)
       if (!hash) return null
       const decompressed = decompressFromEncodedURIComponent(hash)
       if (!decompressed) return null
-      return JSON.parse(decompressed) as StoredState
+      return JSON.parse(decompressed) as HashState
     } catch {
       return null
     }
-  })
+  })()
 
-  const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+  const timerRef = useRef<ReturnType<typeof setTimeout>>()
 
-  const pushState = useCallback((svgs: SvgEntry[], colorMap: ColorMap) => {
+  const pushState = useCallback((raw: string, fileName: string, colorMap: ColorMap) => {
     if (timerRef.current) clearTimeout(timerRef.current)
     timerRef.current = setTimeout(() => {
       try {
-        const data: StoredState = {
-          svgs: svgs.map(({ raw, fileName }) => ({ raw, fileName })),
-          colorMap,
-        }
-        const json = JSON.stringify(data)
-        const payload = json.length > MAX_HASH_BYTES
-          ? JSON.stringify({ colorMap })
-          : json
-        const compressed = compressToEncodedURIComponent(payload)
+        const data: HashState = { raw, fileName, colorMap }
+        const compressed = compressToEncodedURIComponent(JSON.stringify(data))
         window.location.hash = compressed
-      } catch {
-        // silently fail
-      }
-    }, 500)
+      } catch {}
+    }, 800)
   }, [])
 
   const clearUrl = useCallback(() => {
@@ -50,9 +40,7 @@ export function useUrlState() {
   }, [])
 
   useEffect(() => {
-    return () => {
-      if (timerRef.current) clearTimeout(timerRef.current)
-    }
+    return () => { if (timerRef.current) clearTimeout(timerRef.current) }
   }, [])
 
   return { initialState, pushState, clearUrl }

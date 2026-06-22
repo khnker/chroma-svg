@@ -1,0 +1,69 @@
+{
+  "feature": "chroma-v2",
+  "app": "Chroma / SVG Color Studio",
+  "version": "2.0",
+  "parallel": true,
+  "layers": {
+    "storage": {
+      "name": "localStorage persistence",
+      "files": ["src/hooks/useStorage.ts", "src/App.tsx"],
+      "changes": "New useStorage hook that persists svgs + colorMap to localStorage. Init from localStorage, fall back to URL hash. Debounced writes. Clear button in header. Max 5 SVGs at 2MB each.",
+      "new_deps": [],
+      "parallel": true
+    },
+    "image-upload": {
+      "name": "PNG/JPG/WEBP → SVG extraction",
+      "files": ["src/hooks/useImageLoader.ts", "src/hooks/useSvgLoader.ts", "src/components/SvgUploader.tsx", "src/App.tsx"],
+      "changes": "Extend SvgUploader to accept image/* files. New useImageLoader hook: render to canvas → getImageData → k-means color extraction (dominant colors). Either (a) convert raster to SVG placeholder or (b) extract color palette from image. File size limit 5MB.",
+      "new_deps": [],
+      "parallel": true
+    },
+    "virtual-scroll": {
+      "name": "Virtual scroll for Gallery",
+      "files": ["src/components/PaletteGallery.tsx"],
+      "changes": "Replace simple grid with WindowedVirtualScroll (intersection observer based, no extra deps). Render only visible cards + 2 rows buffer. Fixed card height 220px. ~500 galleries without DOM blowup.",
+      "parallel": true
+    },
+    "unified-export": {
+      "name": "Unified Export dialog",
+      "files": ["src/components/ExportDialog.tsx", "src/App.tsx", "src/hooks/useKeyboardShortcuts.ts"],
+      "changes": "New ExportDialog component: tabbed export (SVG, CSS tokens, Palette JSON). Single Cmd+E shortcut. Preview panel shows output before download. Palette export = colorMap as JSON.",
+      "new_deps": [],
+      "parallel": true
+    },
+    "mobile": {
+      "name": "Responsive mobile layout",
+      "files": ["src/App.tsx", "src/components/SvgPreview.tsx", "src/components/SvgUploader.tsx"],
+      "changes": "Breakpoints: stacked single-column ≤1024px. Collapsible sidebar with drawer. Touch-friendly: larger tap targets (min 44px), swipe to close sidebar. Bottom sheet for color picker on mobile. Header collapses to icon-only on ≤640px.",
+      "parallel": true
+    },
+    "premium-design": {
+      "name": "Premium visual polish",
+      "files": ["src/index.css", "src/App.tsx", "src/components/Logo.tsx"],
+      "changes": "Glassmorphism header (stronger backdrop-blur + subtle border). Gradient accents on primary-500 buttons. Page transitions (fade-in on load). Subtle background pattern/grid. Better empty state illustration. Loading skeletons with shimmer animation. Card hover scale(1.01) + lift shadow.",
+      "parallel": true
+    },
+    "tab-icons": {
+      "name": "Tab icons",
+      "files": ["src/App.tsx"],
+      "changes": "Inline SVG icons for Trending (trending-up icon) and Gallery (grid icon) tabs. 16px icons with currentColor fill. No external icon dependency.",
+      "parallel": true
+    },
+    "card-alignment": {
+      "name": "Card equal-height alignment",
+      "files": ["src/App.tsx", "src/components/TrendingPalettes.tsx", "src/components/PaletteGallery.tsx"],
+      "changes": "Grid cards use flex-col + flex-1 on content to equalize heights. Gallery grid: fixed card height with overflow-hidden. Trending grid: min-h-[180px] cards with consistent spacing.",
+      "parallel": true
+    }
+  },
+  "order": ["storage", "tab-icons", "image-upload", "virtual-scroll", "card-alignment", "unified-export", "mobile", "premium-design"],
+  "invariants": [
+    "No new npm dependencies — only browser APIs",
+    "No breaking changes to existing hooks/component APIs",
+    "All 99 existing tests must pass",
+    "build + tsc must pass",
+    "localStorage keys: chroma_svgs, chroma_colormap, chroma_version",
+    "Max localStorage size: 5MB total",
+    "Image files limited to 5MB, SVG files limited to 2MB"
+  ]
+}

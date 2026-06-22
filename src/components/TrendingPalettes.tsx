@@ -25,7 +25,7 @@ export function TrendingPalettes({ onApply }: TrendingPalettesProps) {
           {palettes.map((p) => (
             <div
               key={p.id}
-              className="group relative rounded-xl border border-neutral-200 bg-white shadow-sm overflow-hidden hover:border-neutral-300 hover:shadow-md transition-all"
+              className="group relative rounded-xl border border-neutral-200 bg-white shadow-sm overflow-hidden hover:border-neutral-300 hover:shadow-md transition-all flex flex-col"
             >
               <div className="flex h-10">
                 {p.hexes.map((c, i) => (
