@@ -1,19 +1,19 @@
 export function Logo({ size = 32 }: { size?: number }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="3" y="3" width="26" height="26" rx="7" stroke="url(--lg)" strokeWidth="1.2" opacity="0.3"/>
-      <path d="M10 20l4-10 2 5 2-3 4 8H10z" fill="url(--lg)" opacity="0.7"/>
-      <circle cx="10" cy="26" r="2" fill="#7C3AED"/>
-      <circle cx="16" cy="26" r="2" fill="#EC4899"/>
-      <circle cx="22" cy="26" r="2" fill="#F59E0B"/>
+    <svg width={size} height={size} viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <linearGradient id="--lg" x1="6" y1="26" x2="26" y2="6">
-          <stop offset="0%" stopColor="#A78BFA"/>
-          <stop offset="35%" stopColor="#7C3AED"/>
-          <stop offset="65%" stopColor="#EC4899"/>
-          <stop offset="100%" stopColor="#F59E0B"/>
+        <linearGradient id="lg" x1="12" y1="108" x2="108" y2="12">
+          <stop offset="0%" stopColor="#A78BFA" />
+          <stop offset="35%" stopColor="#7C3AED" />
+          <stop offset="65%" stopColor="#EC4899" />
+          <stop offset="100%" stopColor="#F59E0B" />
         </linearGradient>
       </defs>
+      <rect x="10" y="10" width="100" height="100" rx="24" stroke="url(#lg)" strokeWidth="2" opacity="0.25" />
+      <path d="M35 75l18-40 8 20 10-14 16 34H35z" fill="url(#lg)" opacity="0.75" />
+      <circle cx="36" cy="96" r="8" fill="#7C3AED" />
+      <circle cx="60" cy="96" r="8" fill="#EC4899" />
+      <circle cx="84" cy="96" r="8" fill="#F59E0B" />
     </svg>
   )
 }

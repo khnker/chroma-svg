@@ -1,5 +1,5 @@
-import { describe, it, expect, vi } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { describe, it, expect } from 'vitest'
+import { render } from '@testing-library/react'
 import { SvgPreview } from '../../components/SvgPreview'
 
 describe('SvgPreview', () => {
@@ -7,7 +7,7 @@ describe('SvgPreview', () => {
 
   it('renders SVG via dangerouslySetInnerHTML', () => {
     const { container } = render(
-      <SvgPreview svgContent={svgContent} fileName="test.svg" onReset={vi.fn()} />
+      <SvgPreview svgContent={svgContent} />
     )
     const svgEl = container.querySelector('svg')
     expect(svgEl).toBeTruthy()
@@ -15,26 +15,15 @@ describe('SvgPreview', () => {
 
   it('renders nothing when svgContent is null', () => {
     const { container } = render(
-      <SvgPreview svgContent={null} fileName={null} onReset={vi.fn()} />
+      <SvgPreview svgContent={null} />
     )
     expect(container.innerHTML).toBe('')
   })
 
-  it('download button triggers SVG export', () => {
-    render(
-      <SvgPreview svgContent={svgContent} fileName="test.svg" onReset={vi.fn()} />
+  it('renders zoom controls', () => {
+    const { container } = render(
+      <SvgPreview svgContent={svgContent} />
     )
-    const downloadBtn = screen.getByText(/download/i).closest('button')!
-    expect(downloadBtn).toBeTruthy()
-  })
-
-  it('reset button triggers onReset', () => {
-    const onReset = vi.fn()
-    render(
-      <SvgPreview svgContent={svgContent} fileName="test.svg" onReset={onReset} />
-    )
-    const resetBtn = screen.getByText(/reset/i).closest('button')!
-    fireEvent.click(resetBtn)
-    expect(onReset).toHaveBeenCalled()
+    expect(container.querySelector('button')?.textContent).toBe('-')
   })
 })

@@ -3,7 +3,7 @@ import type { ColorEntry, ColorMap } from '@/core/types'
 interface ColorListProps {
   colors: ColorEntry[]
   colorMap: ColorMap
-  onColorSelect: (entry: ColorEntry) => void
+  onColorSelect: (entry: ColorEntry, e: React.MouseEvent) => void
   selectedColor: string | null
 }
 
@@ -25,7 +25,7 @@ export function ColorList({ colors, colorMap, onColorSelect, selectedColor }: Co
         return (
           <button
             key={entry.normalized}
-            onClick={() => onColorSelect(entry)}
+            onClick={(e) => onColorSelect(entry, e)}
             className={`flex items-center gap-1 px-2 py-1 rounded-md text-xs font-mono transition-colors
               ${isSelected
                 ? 'bg-primary-50 ring-1 ring-primary-200 text-primary-700'
