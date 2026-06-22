@@ -4,8 +4,7 @@ import { SvgPreview } from './components/SvgPreview'
 import { SvgTabBar } from './components/SvgTabBar'
 import { ColorList } from './components/ColorList'
 import { ColorPickerPanel } from './components/ColorPickerPanel'
-import { PaletteBrowser } from './components/PaletteBrowser'
-import { QuickPalettePanel } from './components/QuickPalettePanel'
+import { CoolorsImport } from './components/CoolorsImport'
 import { PaletteGallery } from './components/PaletteGallery'
 import { TrendingPalettes } from './components/TrendingPalettes'
 import { usePaletteGallery } from './hooks/usePaletteGallery'
@@ -24,15 +23,13 @@ import { homogenizeColorMap } from './lib/homogenize'
 import { downloadCssTokens } from './core/color-replacer'
 import { HomogenizeSlider } from './components/HomogenizeSlider'
 import { ThemePreview } from './components/ThemePreview'
-import type { ColorEntry, PaletteColor } from './core/types'
+import type { ColorEntry } from './core/types'
 
-type Tab = 'palettes' | 'trending' | 'harmonies' | 'gallery'
+type Tab = 'trending' | 'gallery'
 type ViewTab = 'svg' | 'theme'
 
 const TAB_LABELS: Record<Tab, string> = {
-  palettes: 'Palettes',
   trending: 'Trending',
-  harmonies: 'Harmonies',
   gallery: 'Gallery',
 }
 
@@ -83,12 +80,6 @@ export default function App() {
     setSelectedEntry(null)
     setPickerPos(null)
   }, [])
-
-  const handlePaletteSelect = (color: PaletteColor) => {
-    if (selectedEntry) {
-      updateColor(selectedEntry.original, color.hex)
-    }
-  }
 
   const handleSvgColorClick = useCallback((fill: string, e: React.MouseEvent<HTMLDivElement>) => {
     const lower = fill.toLowerCase()
@@ -154,11 +145,6 @@ export default function App() {
     onExportCss: handleExportCss,
     onHelp: () => setHelpOpen(true),
   })
-
-  const themeColors = (() => {
-    const sorted = [...colors].sort((a, b) => b.elementCount - a.elementCount)
-    return sorted.slice(0, 3).map((c) => colorMap[c.original] ?? c.normalized)
-  })()
 
   return (
     <div className="min-h-screen bg-neutral-50 font-sans antialiased text-neutral-900">
@@ -306,7 +292,7 @@ export default function App() {
               {/* Tab bar */}
               <div className="bg-white rounded-xl border border-neutral-200 shadow-sm p-4 pt-3">
                 <div className="flex gap-1 mb-3">
-                  {(['trending', 'harmonies', 'palettes', 'gallery'] as Tab[]).map((t) => (
+                  {(['trending', 'gallery'] as Tab[]).map((t) => (
                     <button
                       key={t}
                       onClick={() => setTab(t)}
@@ -323,29 +309,10 @@ export default function App() {
                 {tab === 'trending' && (
                   <section>
                     <p className="text-[11px] text-neutral-400 mb-3">Popular color palettes from the community</p>
-                    <TrendingPalettes onApply={handleApplyPalette} />
-                  </section>
-                )}
-
-                {tab === 'harmonies' && (
-                  <section>
-                    <p className="text-[11px] text-neutral-400 mb-3">Color harmonies based on your active palette</p>
-                    {themeColors.length > 0 ? (
-                      <QuickPalettePanel
-                        seedColor={themeColors[0]}
-                        paletteColors={lastAppliedPalette ?? undefined}
-                        onApply={handleApplyPalette}
-                      />
-                    ) : (
-                      <p className="text-xs text-neutral-400 py-4 text-center">Load an SVG to see harmonies</p>
-                    )}
-                  </section>
-                )}
-
-                {tab === 'palettes' && (
-                  <section>
-                    <p className="text-[11px] text-neutral-400 mb-3">Browse curated palettes or import from Coolors</p>
-                    <PaletteBrowser onColorSelect={handlePaletteSelect} onApply={handleApplyPalette} />
+                    <div className="space-y-3">
+                      <CoolorsImport onApply={handleApplyPalette} />
+                      <TrendingPalettes onApply={handleApplyPalette} />
+                    </div>
                   </section>
                 )}
 
