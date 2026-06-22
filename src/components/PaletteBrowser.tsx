@@ -4,7 +4,7 @@ import type { PaletteColor } from '@/core/types'
 
 interface PaletteBrowserProps {
   onColorSelect: (color: PaletteColor) => void
-  onApply: (colors: string[]) => void
+  onApply: (colors: string[], paletteName?: string) => void
 }
 
 export function PaletteBrowser({ onColorSelect, onApply }: PaletteBrowserProps) {
@@ -79,7 +79,7 @@ export function PaletteBrowser({ onColorSelect, onApply }: PaletteBrowserProps) 
           <div className="flex items-center justify-between mb-2">
             <h4 className="text-sm font-medium text-neutral-700">{palette.name}</h4>
             <button
-              onClick={() => onApply(palette.colors.map((c) => c.hex))}
+              onClick={() => onApply(palette.colors.map((c) => c.hex), palette.name)}
               className="px-2.5 py-1 text-xs bg-neutral-800 text-white rounded-lg hover:bg-neutral-900"
             >
               Apply

@@ -4,7 +4,7 @@ import { textColor } from './preview/types'
 
 interface QuickPalettePanelProps {
   seedColor: string
-  onApply: (colors: string[]) => void
+  onApply: (colors: string[], paletteName?: string) => void
   disabled?: boolean
   paletteColors?: string[]
 }
@@ -57,7 +57,7 @@ function PaletteCard({
   disabled,
 }: {
   palette: HarmonyPalette
-  onApply: (colors: string[]) => void
+  onApply: (colors: string[], paletteName?: string) => void
   disabled?: boolean
 }) {
   return (

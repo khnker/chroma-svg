@@ -109,6 +109,7 @@ export default function App() {
   const [tab, setTab] = useState<Tab>('trending')
   const [viewTab, setViewTab] = useState<ViewTab>('svg')
   const [lastAppliedPalette, setLastAppliedPalette] = useState<string[] | null>(null)
+  const [lastAppliedPaletteName, setLastAppliedPaletteName] = useState<string | null>(null)
   const [paletteRotation, setPaletteRotation] = useState(0)
   const [helpOpen, setHelpOpen] = useState(false)
   const [exportOpen, setExportOpen] = useState(false)
@@ -150,7 +151,7 @@ export default function App() {
     }
   }, [colors, colorMap])
 
-  const handleApplyPalette = useCallback((paletteColors: string[]) => {
+  const handleApplyPalette = useCallback((paletteColors: string[], paletteName?: string) => {
     const filtered = paletteColors.filter((c) => !isNearBlackOrWhite(c))
     if (filtered.length === 0) return
     const assignOffset = paletteRotation % filtered.length
@@ -159,6 +160,7 @@ export default function App() {
       replacement: filtered[(i + assignOffset) % filtered.length],
     }))
     setLastAppliedPalette(filtered)
+    setLastAppliedPaletteName(paletteName ?? null)
     setPaletteRotation(prev => prev + 1)
     setHomogenizeFactor(0)
     applyPalette(entries)
@@ -423,6 +425,7 @@ export default function App() {
         svgContent={previewSvg}
         colorMap={colorMap}
         svgName={activeSvg?.fileName.replace(/\.svg$/i, '') ?? 'colors'}
+        paletteName={lastAppliedPaletteName}
       />
 
       {/* ── Help Dialog ── */}

@@ -3,7 +3,7 @@ import type { PaletteGalleryItem } from '@/hooks/usePaletteGallery'
 
 interface PaletteGalleryProps {
   galleries: PaletteGalleryItem[]
-  onApplyPalette: (colors: string[]) => void
+  onApplyPalette: (colors: string[], paletteName?: string) => void
   selectedPalette?: string[] | null
 }
 
@@ -66,7 +66,7 @@ function GalleryCard({
   selectedPalette,
 }: {
   item: PaletteGalleryItem
-  onApply: (colors: string[]) => void
+  onApply: (colors: string[], paletteName?: string) => void
   selectedPalette?: string[] | null
 }) {
   const [hovered, setHovered] = useState(false)
@@ -84,7 +84,7 @@ function GalleryCard({
       style={{ height: CARD_HEIGHT }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      onClick={() => onApply(item.paletteColors)}
+      onClick={() => onApply(item.paletteColors, item.name)}
     >
       <div className="bg-neutral-50 p-3 flex items-center justify-center flex-1 overflow-hidden relative min-h-0">
         {item.previewSvg && (

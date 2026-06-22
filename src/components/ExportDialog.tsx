@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react'
 import { generateTailwindTokens } from '../core/color-replacer'
+import { buildNameMatrix } from '../lib/color-names'
 import type { ColorMap } from '../core/types'
 
 interface ExportDialogProps {
@@ -8,16 +9,18 @@ interface ExportDialogProps {
   svgContent: string | null
   colorMap: ColorMap
   svgName: string
+  paletteName?: string | null
 }
 
-type ExportTab = 'svg' | 'css' | 'json'
+type ExportTab = 'svg' | 'css' | 'json' | 'names'
 
-export function ExportDialog({ isOpen, onClose, svgContent, colorMap, svgName }: ExportDialogProps) {
+export function ExportDialog({ isOpen, onClose, svgContent, colorMap, svgName, paletteName }: ExportDialogProps) {
   const [tab, setTab] = useState<ExportTab>('svg')
   const [copied, setCopied] = useState(false)
 
   const cssTokens = useMemo(() => generateTailwindTokens(colorMap), [colorMap])
   const paletteJson = useMemo(() => JSON.stringify(colorMap, null, 2), [colorMap])
+  const nameMatrix = useMemo(() => buildNameMatrix(colorMap, paletteName ?? null), [colorMap, paletteName])
 
   if (!isOpen) return null
 
@@ -41,6 +44,7 @@ export function ExportDialog({ isOpen, onClose, svgContent, colorMap, svgName }:
     { id: 'svg', label: 'SVG' },
     { id: 'css', label: 'CSS Tokens' },
     { id: 'json', label: 'Palette JSON' },
+    { id: 'names', label: 'Color Names' },
   ]
 
   return (
@@ -143,6 +147,55 @@ export function ExportDialog({ isOpen, onClose, svgContent, colorMap, svgName }:
                   className="px-4 py-2 text-sm font-medium text-neutral-600 bg-neutral-100 hover:bg-neutral-200 rounded-lg transition-colors"
                 >
                   {copied ? 'Copied!' : 'Copy'}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {tab === 'names' && (
+            <div className="space-y-4">
+              <p className="text-xs text-neutral-400">
+                {paletteName
+                  ? `Named color matrix for "${paletteName}" — each replacement gets a role-based name.`
+                  : 'Color names derived from hex values and palette context.'}
+              </p>
+              <div className="overflow-x-auto rounded-lg border border-neutral-200">
+                <table className="w-full text-xs">
+                  <thead>
+                    <tr className="bg-neutral-50 border-b border-neutral-200">
+                      <th className="text-left px-3 py-2 font-medium text-neutral-500">Original</th>
+                      <th className="text-left px-3 py-2 font-medium text-neutral-500">Replacement</th>
+                      <th className="text-right px-3 py-2 font-medium text-neutral-500">Preview</th>
+                      <th className="text-left px-3 py-2 font-medium text-neutral-500">Name</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {nameMatrix.map((row, i) => {
+                      const origHex = row.original.startsWith('#') ? row.original : `#${row.original}`
+                      const replHex = row.replacement.startsWith('#') ? row.replacement : `#${row.replacement}`
+                      return (
+                        <tr key={i} className="border-b border-neutral-100 last:border-0 hover:bg-neutral-50">
+                          <td className="px-3 py-2 font-mono text-neutral-600">{origHex}</td>
+                          <td className="px-3 py-2 font-mono text-neutral-600">{replHex}</td>
+                          <td className="px-3 py-2 text-right">
+                            <span
+                              className="inline-block w-6 h-4 rounded border border-neutral-200 align-middle"
+                              style={{ backgroundColor: replHex }}
+                            />
+                          </td>
+                          <td className="px-3 py-2 font-medium text-neutral-800">{row.name}</td>
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </table>
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => handleCopy(nameMatrix.map(r => `${r.name}: ${r.replacement}`).join('\n'))}
+                  className="px-4 py-2 text-sm font-medium text-neutral-600 bg-neutral-100 hover:bg-neutral-200 rounded-lg transition-colors"
+                >
+                  {copied ? 'Copied!' : 'Copy Names'}
                 </button>
               </div>
             </div>

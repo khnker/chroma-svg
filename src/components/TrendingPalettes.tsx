@@ -1,7 +1,7 @@
 import { useTrendingPalettes } from '@/hooks/useTrendingPalettes'
 
 interface TrendingPalettesProps {
-  onApply: (colors: string[]) => void
+  onApply: (colors: string[], paletteName?: string) => void
   selectedPalette?: string[] | null
 }
 
@@ -33,7 +33,7 @@ export function TrendingPalettes({ onApply, selectedPalette }: TrendingPalettesP
             return (
               <div
                 key={p.id}
-                onClick={() => onApply(p.hexes)}
+                onClick={() => onApply(p.hexes, p.name)}
                 className={`relative rounded-xl border bg-white shadow-sm overflow-hidden transition-all flex flex-col cursor-pointer
                   ${sel
                     ? 'ring-2 ring-primary-500 border-primary-300 shadow-md'
