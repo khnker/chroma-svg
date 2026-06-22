@@ -4,8 +4,6 @@ import { SvgPreview } from './components/SvgPreview'
 import { SvgTabBar } from './components/SvgTabBar'
 import { ColorList } from './components/ColorList'
 import { ColorPickerPanel } from './components/ColorPickerPanel'
-import { PaletteBrowser } from './components/PaletteBrowser'
-import { QuickPalettePanel } from './components/QuickPalettePanel'
 import { PaletteGallery } from './components/PaletteGallery'
 import { TrendingPalettes } from './components/TrendingPalettes'
 import { ExportDialog } from './components/ExportDialog'
@@ -21,32 +19,50 @@ import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
 import { Dialog } from './components/ui/Dialog'
 import { Tooltip } from './components/ui/Tooltip'
 import { Logo } from './components/Logo'
-import { isNearBlackOrWhite } from './lib/color-utils'
+import { isNearBlackOrWhite, generateColorScale } from './lib/color-utils'
 import { homogenizeColorMap } from './lib/homogenize'
 import { HomogenizeSlider } from './components/HomogenizeSlider'
 import { ThemePreview } from './components/ThemePreview'
 import type { ColorEntry, PaletteColor } from './core/types'
 
-type Tab = 'trending' | 'palettes' | 'harmonies' | 'gallery'
+type Tab = 'palettes' | 'previews'
 type ViewTab = 'svg' | 'theme'
 
 const TAB_LABELS: Record<Tab, string> = {
-  trending: 'Trending',
   palettes: 'Palettes',
-  harmonies: 'Harmonies',
-  gallery: 'Gallery',
+  previews: 'Previews',
 }
 
 const TAB_ICONS: Record<Tab, string> = {
-  trending: 'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6',
   palettes: 'M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01',
-  harmonies: 'M4.5 12a7.5 7.5 0 0015 0m-15 0a7.5 7.5 0 1115 0m-15 0H3m16.5 0H21m-1.5 0H12m-8.457 3.077l1.41-.513m14.095-5.13l1.41-.513M5.106 17.785l1.15-.964m11.49-9.642l1.149-.964M7.501 19.795l.75-1.3m7.5-12.99l.75-1.3m-6.06 16.368l.75-1.3M7.5 4.5L12 3l4.5 1.5',
-  gallery: 'M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z',
+  previews: 'M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z',
+}
+
+const DEFAULT_THEME = {}
+
+function generateSiteTheme(paletteColors: string[]): Record<string, string> {
+  const base = paletteColors[0]
+  if (!base) return {}
+  const scale = generateColorScale(base)
+  if (!scale) return {}
+  return {
+    '--color-primary-50': scale['50'],
+    '--color-primary-100': scale['100'],
+    '--color-primary-200': scale['200'],
+    '--color-primary-300': scale['300'],
+    '--color-primary-400': scale['400'],
+    '--color-primary-500': scale['500'],
+    '--color-primary-600': scale['600'],
+    '--color-primary-700': scale['700'],
+    '--color-primary-800': scale['800'],
+    '--color-primary-900': scale['900'],
+    '--color-primary-950': scale['950'],
+  }
 }
 
 export default function App() {
   // ── Storage & URL ──
-  const { initialSvgs, initialColorMap, initialActiveIndex, persist, clearSession } = useStorage()
+  const { initialSvgs, initialColorMap, persist, clearSession } = useStorage()
   const { initialState: urlState, pushState: pushUrl, clearUrl } = useUrlState()
   const [hydrated, setHydrated] = useState(false)
 
@@ -76,7 +92,10 @@ export default function App() {
   const { previewSvg } = usePreview(activeSvg?.raw ?? null, previewColorMap)
   const galleries = usePaletteGallery(activeSvg?.raw ?? null, colors, contrastMap)
 
-  // ── Persist to localStorage + URL hash ──
+  // ── Site theme ──
+  const [siteTheme, setSiteTheme] = useState<Record<string, string>>(DEFAULT_THEME)
+
+  // ── Persist ──
   useEffect(() => {
     if (!hydrated) { setHydrated(true); return }
     persist(svgs, colorMap, svgs.indexOf(activeSvg!))
@@ -87,26 +106,10 @@ export default function App() {
     pushUrl(activeSvg.raw, activeSvg.fileName, colorMap)
   }, [activeSvg?.raw, colorMap, pushUrl, hydrated])
 
-  // ── Image palette extraction ──
-  const handleImagePalette = useCallback((colors: string[], file: File) => {
-    // Apply extracted colors directly as a palette
-    if (colors.length === 0) return
-    const entries = colors
-      .filter((c) => !isNearBlackOrWhite(c))
-      .map((c, i) => ({
-        original: colors[i % colors.length],
-        replacement: c,
-      }))
-    if (entries.length > 0) {
-      setLastAppliedPalette(colors)
-      applyPalette(entries.map((e) => ({ original: e.original, replacement: e.replacement })))
-    }
-  }, [applyPalette])
-
   // ── State ──
   const [selectedColor, setSelectedColor] = useState<string | null>(null)
   const [selectedEntry, setSelectedEntry] = useState<ColorEntry | null>(null)
-  const [tab, setTab] = useState<Tab>('trending')
+  const [tab, setTab] = useState<Tab>('palettes')
   const [viewTab, setViewTab] = useState<ViewTab>('svg')
   const [lastAppliedPalette, setLastAppliedPalette] = useState<string[] | null>(null)
   const [lastAppliedPaletteName, setLastAppliedPaletteName] = useState<string | null>(null)
@@ -117,7 +120,9 @@ export default function App() {
 
   useEffect(() => {
     setLastAppliedPalette(null)
+    setLastAppliedPaletteName(null)
     setPaletteRotation(0)
+    setSiteTheme(DEFAULT_THEME)
   }, [activeSvg?.id])
 
   // ── Handlers ──
@@ -164,20 +169,17 @@ export default function App() {
     setPaletteRotation(prev => prev + 1)
     setHomogenizeFactor(0)
     applyPalette(entries)
+    setSiteTheme(generateSiteTheme(filtered))
   }, [colors, applyPalette, paletteRotation])
 
   const handleReset = () => {
     setSelectedColor(null)
     setSelectedEntry(null)
     setLastAppliedPalette(null)
+    setLastAppliedPaletteName(null)
     setHomogenizeFactor(0)
+    setSiteTheme(DEFAULT_THEME)
     resetAll()
-  }
-
-  const handleNewSession = () => {
-    clearSession()
-    clearUrl()
-    setTimeout(() => window.location.reload(), 50)
   }
 
   // ── Keyboard shortcuts ──
@@ -193,13 +195,13 @@ export default function App() {
   // ── Derived ──
   const themeColors = (() => {
     const sorted = [...colors].sort((a, b) => b.elementCount - a.elementCount)
-    return sorted.slice(0, 3).map((c) => colorMap[c.original] ?? c.normalized)
+    return sorted.slice(0, 3).map((c) => previewColorMap[c.original] ?? c.normalized)
   })()
 
-  // ── Shared tab bar component ──
+  // ── Shared tab bar ──
   const renderTabBar = (vertical?: boolean) => (
     <div className={`${vertical ? 'flex-col' : 'flex'} gap-1`}>
-      {(['trending', 'harmonies', 'palettes', 'gallery'] as Tab[]).map((t) => (
+      {(['palettes', 'previews'] as Tab[]).map((t) => (
         <button
           key={t}
           onClick={() => { setTab(t); setSidebarOpen(false) }}
@@ -219,7 +221,10 @@ export default function App() {
   )
 
   return (
-    <div className="min-h-screen bg-neutral-50 font-sans antialiased text-neutral-900">
+    <div
+      className="min-h-screen bg-neutral-50 font-sans antialiased text-neutral-900"
+      style={siteTheme as React.CSSProperties}
+    >
 
       {/* ── Header ── */}
       <header className="sticky top-0 z-40 bg-white/70 backdrop-blur-xl border-b border-neutral-200/60">
@@ -269,7 +274,6 @@ export default function App() {
                     ?
                   </button>
                 </Tooltip>
-                {/* Mobile sidebar toggle */}
                 <button
                   onClick={() => setSidebarOpen(!sidebarOpen)}
                   className="min-w-[44px] h-9 flex items-center justify-center text-neutral-500 bg-neutral-100 hover:bg-neutral-200 rounded-lg transition-all lg:hidden active:scale-95"
@@ -287,30 +291,22 @@ export default function App() {
       {/* ── Main ── */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 animate-fade-in">
 
-        {/* Empty state */}
         {!hasSvgs && (
-          <SvgUploader
-            onFile={loadFile}
-            onImagePalette={hasSvgs ? handleImagePalette : undefined}
-            hasFile={false}
-          />
+          <SvgUploader onFile={loadFile} hasFile={false} />
         )}
 
-        {/* Error */}
         {loaderError && (
           <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
             {loaderError}
           </div>
         )}
 
-        {/* Workspace */}
         {hasSvgs && (
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
 
             {/* ── LEFT: Preview (3/5) ── */}
             <div className="lg:col-span-3 space-y-5 min-w-0">
 
-              {/* Preview tabs */}
               <div className="flex items-center justify-between gap-3">
                 <div className="flex rounded-lg border border-neutral-200 bg-white p-0.5 shadow-sm">
                   {(['svg', 'theme'] as ViewTab[]).map((vt) => (
@@ -336,7 +332,6 @@ export default function App() {
                 </Tooltip>
               </div>
 
-              {/* Preview */}
               {viewTab === 'svg' ? (
                 <SvgPreview
                   svgContent={previewSvg}
@@ -345,10 +340,9 @@ export default function App() {
                   onColorClick={handleSvgColorClick}
                 />
               ) : (
-                <ThemePreview colorMap={colorMap} svgName={activeSvg?.fileName.replace(/\.svg$/i, '') ?? 'colors'} />
+                <ThemePreview colorMap={previewColorMap} svgName={activeSvg?.fileName.replace(/\.svg$/i, '') ?? 'colors'} />
               )}
 
-              {/* Color tools */}
               {colors.length > 0 && (
                 <div className="bg-white rounded-xl border border-neutral-200 shadow-sm p-4 space-y-4">
                   <div className="flex items-center justify-between">
@@ -363,7 +357,7 @@ export default function App() {
                   />
                   <ColorList
                     colors={colors}
-                    colorMap={colorMap}
+                    colorMap={previewColorMap}
                     onColorSelect={(entry) => { handleColorSelect(entry); setSidebarOpen(true) }}
                     selectedColor={selectedColor}
                   />
@@ -372,7 +366,6 @@ export default function App() {
             </div>
 
             {/* ── RIGHT: Sidebar (2/5) ── */}
-            {/* Desktop */}
             <div className="hidden lg:block lg:col-span-2 space-y-4 min-w-0">
               <SidebarContent
                 tab={tab}
@@ -390,7 +383,6 @@ export default function App() {
               />
             </div>
 
-            {/* Mobile drawer */}
             {sidebarOpen && (
               <div className="fixed inset-0 z-30 lg:hidden">
                 <div className="absolute inset-0 bg-black/30" onClick={() => setSidebarOpen(false)} />
@@ -418,7 +410,6 @@ export default function App() {
         )}
       </main>
 
-      {/* ── Export Dialog ── */}
       <ExportDialog
         isOpen={exportOpen}
         onClose={() => setExportOpen(false)}
@@ -428,7 +419,6 @@ export default function App() {
         paletteName={lastAppliedPaletteName}
       />
 
-      {/* ── Help Dialog ── */}
       <Dialog isOpen={helpOpen} onClose={() => setHelpOpen(false)} title="Keyboard shortcuts">
         <div className="space-y-3 text-sm">
           {[
@@ -452,7 +442,6 @@ export default function App() {
   )
 }
 
-// ── Sidebar Content (shared between desktop and mobile) ──
 function SidebarContent({
   tab,
   renderTabBar,
@@ -470,7 +459,7 @@ function SidebarContent({
   tab: Tab
   renderTabBar: () => React.ReactNode
   galleries: any[]
-  handleApplyPalette: (colors: string[]) => void
+  handleApplyPalette: (colors: string[], paletteName?: string) => void
   handlePaletteSelect: (color: PaletteColor) => void
   themeColors: string[]
   lastAppliedPalette: string[] | null
@@ -482,52 +471,27 @@ function SidebarContent({
 }) {
   return (
     <>
-      {/* Tab bar (vertical on mobile, horizontal on desktop) */}
       <div className="bg-white rounded-xl border border-neutral-200 shadow-sm p-3">
         <div className="lg:hidden">{renderTabBar()}</div>
         <div className="hidden lg:block">{renderTabBar()}</div>
       </div>
 
-      {/* Tab content */}
       <div className="bg-white rounded-xl border border-neutral-200 shadow-sm p-4">
-        {tab === 'trending' && (
-          <section>
-            <p className="text-[11px] text-neutral-400 mb-3">Popular color palettes from the community</p>
-                    <TrendingPalettes onApply={handleApplyPalette} selectedPalette={lastAppliedPalette} />
-          </section>
-        )}
-
-        {tab === 'harmonies' && (
-          <section>
-            <p className="text-[11px] text-neutral-400 mb-3">Color harmonies based on your active palette</p>
-            {themeColors.length > 0 ? (
-              <QuickPalettePanel
-                seedColor={themeColors[0]}
-                paletteColors={lastAppliedPalette ?? undefined}
-                onApply={handleApplyPalette}
-              />
-            ) : (
-              <p className="text-xs text-neutral-400 py-4 text-center">Load an SVG to see harmonies</p>
-            )}
-          </section>
-        )}
-
         {tab === 'palettes' && (
           <section>
-            <p className="text-[11px] text-neutral-400 mb-3">Browse curated palettes or import from Coolors</p>
-            <PaletteBrowser onColorSelect={handlePaletteSelect} onApply={handleApplyPalette} />
+            <p className="text-[11px] text-neutral-400 mb-3">Trending palettes from Coolors &mdash; import your own</p>
+            <TrendingPalettes onApply={handleApplyPalette} selectedPalette={lastAppliedPalette} handlePaletteSelect={handlePaletteSelect} />
           </section>
         )}
 
-        {tab === 'gallery' && (
+        {tab === 'previews' && (
           <section>
-            <p className="text-[11px] text-neutral-400 mb-3">Preview your SVG with different color combinations</p>
-                    <PaletteGallery galleries={galleries} onApplyPalette={handleApplyPalette} selectedPalette={lastAppliedPalette} />
+            <p className="text-[11px] text-neutral-400 mb-3">Apply each palette to your SVG &mdash; preview before you commit</p>
+            <PaletteGallery galleries={galleries} onApplyPalette={handleApplyPalette} selectedPalette={lastAppliedPalette} />
           </section>
         )}
       </div>
 
-      {/* Inline color picker */}
       {selectedEntry && (
         <div className="bg-white rounded-xl border border-neutral-200 shadow-sm p-4">
           <div className="flex items-center justify-between mb-3">

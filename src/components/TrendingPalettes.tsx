@@ -1,12 +1,28 @@
+import { useState } from 'react'
 import { useTrendingPalettes } from '@/hooks/useTrendingPalettes'
+import type { PaletteColor } from '@/core/types'
 
 interface TrendingPalettesProps {
   onApply: (colors: string[], paletteName?: string) => void
   selectedPalette?: string[] | null
+  handlePaletteSelect?: (color: PaletteColor) => void
 }
 
-export function TrendingPalettes({ onApply, selectedPalette }: TrendingPalettesProps) {
+export function TrendingPalettes({ onApply, selectedPalette, handlePaletteSelect }: TrendingPalettesProps) {
   const { palettes, loading, error, refetch } = useTrendingPalettes()
+  const [coolorsUrl, setCoolorsUrl] = useState('')
+  const [imported, setImported] = useState<string[] | null>(null)
+  const [importError, setImportError] = useState('')
+
+  const handleImport = () => {
+    setImportError('')
+    const last = coolorsUrl.trim().split('/').filter(Boolean).pop()
+    if (!last) { setImportError('Paste a coolors.co URL'); return }
+    const parts = last.split('-')
+    const hexes = parts.filter((p) => /^[0-9a-fA-F]{6}$/.test(p)).map((h) => '#' + h)
+    if (hexes.length < 2) { setImportError('No valid colors found in URL'); return }
+    setImported(hexes)
+  }
 
   const isSelected = (hexes: string[]) =>
     selectedPalette !== null && selectedPalette !== undefined &&
@@ -15,6 +31,41 @@ export function TrendingPalettes({ onApply, selectedPalette }: TrendingPalettesP
 
   return (
     <div className="space-y-3">
+
+      {/* Coolors Import */}
+      <div className="pb-3 border-b border-neutral-100">
+        <p className="text-xs font-medium text-neutral-600 mb-2">Import from Coolors</p>
+        <div className="flex gap-2">
+          <input
+            type="text"
+            placeholder="https://coolors.co/0267c1-0075c4-efa00b"
+            value={coolorsUrl}
+            onChange={(e) => { setCoolorsUrl(e.target.value); setImported(null) }}
+            className="flex-1 px-3 py-2 border rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-primary-400"
+          />
+          <button
+            onClick={handleImport}
+            className="px-3 py-2 text-xs bg-primary-500 text-white rounded-lg hover:bg-primary-600"
+          >
+            Import
+          </button>
+        </div>
+        {importError && <p className="text-xs text-red-500 mt-1">{importError}</p>}
+        {imported && (
+          <div className="mt-2 flex items-center gap-2">
+            <div className="flex gap-0.5 flex-1">
+              {imported.map((c) => (
+                <div key={c} className="flex-1 h-6 rounded" style={{ backgroundColor: c }} title={c} />
+              ))}
+            </div>
+            <button onClick={() => onApply(imported)} className="px-3 py-1 text-xs bg-neutral-800 text-white rounded-lg hover:bg-neutral-900">
+              Apply
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Trending header */}
       <div className="flex items-center justify-between">
         <h4 className="text-sm font-medium text-neutral-700">Trending on Coolors</h4>
         <button
@@ -26,6 +77,8 @@ export function TrendingPalettes({ onApply, selectedPalette }: TrendingPalettesP
         </button>
       </div>
       {error && <p className="text-xs text-red-500">{error}</p>}
+
+      {/* Trending palettes grid */}
       {palettes.length > 0 && (
         <div className="grid grid-cols-2 gap-2">
           {palettes.map((p) => {
@@ -57,7 +110,7 @@ export function TrendingPalettes({ onApply, selectedPalette }: TrendingPalettesP
                 </div>
                 {sel && (
                   <p className="text-[9px] text-primary-600 font-medium px-2 pb-1.5">
-                    Click to re-apply &middot; colors will rotate
+                    Click to re-apply &middot; colors rotate
                   </p>
                 )}
               </div>

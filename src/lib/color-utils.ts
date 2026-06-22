@@ -1,5 +1,20 @@
 import { formatHex, parse, converter, wcagContrast } from 'culori'
 
+export function generateColorScale(hex: string): Record<string, string> | null {
+  const toOklch = converter('oklch')
+  const base = toOklch(hex)
+  if (!base || base.h === undefined) return null
+  const { c, h } = base
+  const stops = [0.97, 0.93, 0.86, 0.75, 0.62, 0.50, 0.38, 0.27, 0.17, 0.09, 0.04]
+  const labels = ['50', '100', '200', '300', '400', '500', '600', '700', '800', '900', '950']
+  const result: Record<string, string> = {}
+  labels.forEach((label, i) => {
+    const oklchColor = { mode: 'oklch' as const, l: stops[i], c, h }
+    result[label] = formatHex(oklchColor)
+  })
+  return result
+}
+
 export function normalizeColor(value: string): string | null {
   const trimmed = value.trim()
   if (!trimmed) return null
