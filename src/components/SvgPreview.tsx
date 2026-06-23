@@ -49,7 +49,7 @@ export function SvgPreview({ svgContent, onColorClick, bgMode = 'checker' }: Svg
         </div>
       </div>
       <div
-        className="flex items-center justify-center h-[560px] overflow-auto"
+        className="flex items-center justify-center min-h-[300px] sm:h-[560px] overflow-auto"
         style={{
           background: bgMode === 'white' ? '#ffffff'
             : bgMode === 'black' ? '#111111'

@@ -44,7 +44,7 @@ export function SvgUploader({ onFile, onImagePalette, hasFile }: SvgUploaderProp
       onDragLeave={() => setIsDragging(false)}
       onDrop={handleDrop}
       onClick={() => inputRef.current?.click()}
-      className={`border-2 border-dashed rounded-xl p-12 text-center cursor-pointer transition-all duration-200
+      className={`border-2 border-dashed rounded-xl p-8 sm:p-12 text-center cursor-pointer transition-all duration-200
         ${isDragging ? 'border-primary-500 bg-primary-50 ring-2 ring-primary-300 ring-offset-2 shadow-lg shadow-primary-100' : hasFile ? 'border-neutral-200 bg-neutral-50/50' : 'border-neutral-300 hover:border-neutral-400 hover:shadow-md'}`}
     >
       <input

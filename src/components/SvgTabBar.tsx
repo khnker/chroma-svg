@@ -23,8 +23,8 @@ export function SvgTabBar({ svgs, activeId, onSelect, onClose }: SvgTabBarProps)
               onClick={() => onSelect(svg.id)}
               onMouseEnter={() => setHoveredId(svg.id)}
               onMouseLeave={() => setHoveredId(null)}
-              className={`block w-16 h-16 rounded-lg overflow-hidden border-2 transition-all cursor-pointer relative
-                ${isActive ? 'border-primary-500 ring-2 ring-primary-200' : 'border-neutral-200 hover:border-neutral-300'}`}
+              className={`block w-12 h-12 sm:w-16 sm:h-16 rounded-lg overflow-hidden border-2 transition-all cursor-pointer relative
+                ${isActive ? 'border-primary-500 ring-1 ring-primary-200' : 'border-neutral-200 hover:border-neutral-300'}`}
             >
               <div
                 className="w-full h-full flex items-center justify-center p-1"
