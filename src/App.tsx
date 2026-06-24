@@ -7,6 +7,7 @@ import { ColorPopover } from './components/ColorPopover'
 import { PaletteGallery } from './components/PaletteGallery'
 import { TrendingPalettes } from './components/TrendingPalettes'
 import { ExportDialog } from './components/ExportDialog'
+import { PathTools } from './components/PathTools'
 import { usePaletteGallery } from './hooks/usePaletteGallery'
 import { useMultiSvg } from './hooks/useMultiSvg'
 import { useSvgLoader } from './hooks/useSvgLoader'
@@ -23,6 +24,7 @@ import { isNearBlackOrWhite, generateColorScale } from './lib/color-utils'
 import { homogenizeColorMap } from './lib/homogenize'
 import { HomogenizeSlider } from './components/HomogenizeSlider'
 import { ThemePreview } from './components/ThemePreview'
+import { getPathPoints, addVertexOverlay } from './lib/svg-path-utils'
 import type { ColorEntry, PaletaCustom } from './core/types'
 
 type Tab = 'palettes' | 'previews'
@@ -42,7 +44,7 @@ export default function App() {
   }, [])
 
   // ── Multi-SVG ──
-  const { svgs, activeSvg, hasSvgs, addSvg, removeSvg, setActive } = useMultiSvg(mergedSvgs)
+  const { svgs, activeSvg, hasSvgs, addSvg, removeSvg, setActive, updateSvg } = useMultiSvg(mergedSvgs)
   const { loadFile, error: loaderError } = useSvgLoader({
     onLoad: (raw, name) => addSvg(raw, name),
   })
@@ -58,6 +60,14 @@ export default function App() {
     [colorMap, homogenizeFactor],
   )
   const { previewSvg } = usePreview(activeSvg?.raw ?? null, previewColorMap)
+  const [showVertices, setShowVertices] = useState(false)
+
+  const allPathPoints = useMemo(() => activeSvg?.raw ? getPathPoints(activeSvg.raw) : [], [activeSvg?.raw])
+  const displaySvg = useMemo(() => {
+    if (!showVertices || !previewSvg || allPathPoints.length === 0) return previewSvg
+    return addVertexOverlay(previewSvg, allPathPoints, [])
+  }, [previewSvg, showVertices, allPathPoints])
+
   const [customPalettes, setCustomPalettes] = useState<PaletaCustom[]>([])
   const [bgMode, setBgMode] = useState<'checker' | 'white' | 'black'>('checker')
   const imageInputRef = useRef<HTMLInputElement>(null)
@@ -377,12 +387,23 @@ export default function App() {
 
               {viewTab === 'svg' ? (
                 <SvgPreview
-                  svgContent={previewSvg}
+                  svgContent={displaySvg}
                   onColorClick={handleSvgColorClick}
                   bgMode={bgMode}
                 />
               ) : (
                 <ThemePreview colorMap={previewColorMap} svgName={activeSvg?.fileName.replace(/\.svg$/i, '') ?? 'colors'} />
+              )}
+
+              {viewTab === 'svg' && activeSvg && (
+                <PathTools
+                  svgRaw={activeSvg.raw}
+                  onSimplify={(newRaw) => {
+                    if (activeSvg) updateSvg(activeSvg.id, newRaw)
+                  }}
+                  showVertices={showVertices}
+                  onToggleVertices={setShowVertices}
+                />
               )}
 
               {colors.length > 0 && (

@@ -47,6 +47,13 @@ export function useMultiSvg(initialSvgs: SvgEntry[] = []) {
     }))
   }, [])
 
+  const updateSvg = useCallback((id: string, raw: string) => {
+    setState((prev) => ({
+      ...prev,
+      svgs: prev.svgs.map((s) => (s.id === id ? { ...s, raw } : s)),
+    }))
+  }, [])
+
   const activeSvg = state.svgs[state.activeIndex] ?? null
   const hasSvgs = state.svgs.length > 0
 
@@ -59,5 +66,6 @@ export function useMultiSvg(initialSvgs: SvgEntry[] = []) {
     removeSvg,
     setActive,
     renameSvg,
+    updateSvg,
   }
 }
