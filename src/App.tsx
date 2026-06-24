@@ -226,9 +226,30 @@ export default function App() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 animate-fade-in">
 
         {!hasSvgs && (
-          <SvgUploader onFile={loadFile} onImagePalette={(colors) => {
-            if (colors.length > 0) handleApplyPalette(colors, 'image')
-          }} hasFile={false} />
+          <div className="flex flex-col items-center justify-center min-h-[70vh] gap-8">
+            <div className="flex flex-col items-center gap-4 text-center">
+              <div className="opacity-90"><Logo size={72} /></div>
+              <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-neutral-800">
+                Chroma SVG
+              </h1>
+              <p className="text-neutral-500 max-w-md text-sm sm:text-base leading-relaxed">
+                Recolor any SVG file in seconds. Upload your SVG, tweak colors with a live preview,
+                and export the result — no design tools needed.
+              </p>
+              <div className="flex items-center gap-3 text-xs text-neutral-400">
+                <span>🎯 Click to recolor</span>
+                <span className="w-1 h-1 rounded-full bg-neutral-300" />
+                <span>🔄 Live preview</span>
+                <span className="w-1 h-1 rounded-full bg-neutral-300" />
+                <span>📤 Export SVG</span>
+              </div>
+            </div>
+            <div className="w-full max-w-md">
+              <SvgUploader onFile={loadFile} onImagePalette={(colors) => {
+                if (colors.length > 0) handleApplyPalette(colors, 'image')
+              }} hasFile={false} />
+            </div>
+          </div>
         )}
 
         {loaderError && (
