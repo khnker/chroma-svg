@@ -12,16 +12,27 @@ export function PathTools({ svgRaw, onSimplify, showVertices, onToggleVertices }
   const [issues, setIssues] = useState<VertexIssue[]>([])
   const [isScanning, setIsScanning] = useState(false)
   const [simplified, setSimplified] = useState(false)
+  const [simplifyResult, setSimplifyResult] = useState<{ removed: number; bytesBefore: number; bytesAfter: number } | null>(null)
+  const [noPolyline, setNoPolyline] = useState(false)
 
   const allData = useMemo(() => getPathPoints(svgRaw), [svgRaw])
   const vertexCount = useMemo(() => allData.reduce((s, p) => s + p.points.length, 0), [allData])
+  const hasCurves = useMemo(() => /[CSQTAcsqta]/.test(svgRaw), [svgRaw])
 
   const handleSimplify = () => {
-    const result = simplifySvg(svgRaw, 1)
+    const result = simplifySvg(svgRaw, 1.5)
     if (result !== svgRaw) {
+      const before = new Blob([svgRaw]).size
+      const after = new Blob([result]).size
+      const ptsBefore = vertexCount
+      const ptsAfter = getPathPoints(result).reduce((s, p) => s + p.points.length, 0)
       onSimplify(result)
       setSimplified(true)
       setIssues([])
+      setSimplifyResult({ removed: ptsBefore - ptsAfter, bytesBefore: before, bytesAfter: after })
+      setNoPolyline(false)
+    } else if (!hasCurves) {
+      setNoPolyline(true)
     }
   }
 
@@ -40,7 +51,7 @@ export function PathTools({ svgRaw, onSimplify, showVertices, onToggleVertices }
           disabled={simplified}
           className="shrink-0 h-7 px-2.5 text-[10px] font-medium rounded-lg transition-all border disabled:opacity-40 disabled:cursor-not-allowed
             text-primary-600 border-primary-200 bg-primary-50 hover:bg-primary-100 active:scale-95"
-          title="Simplificar paths con Ramer-Douglas-Peucker: elimina vértices redundantes en líneas rectas y curvas suaves, reduciendo el tamaño del SVG sin pérdida visual apreciable."
+          title="Simplificar paths con Ramer-Douglas-Peucker: elimina vértices redundantes en líneas rectas. Solo afecta paths polilineares (sin curvas C/Q/A). Los paths con curvas se dejan intactos."
         >
           ✂ Simplify
         </button>
@@ -89,10 +100,19 @@ export function PathTools({ svgRaw, onSimplify, showVertices, onToggleVertices }
         <span>{vertexCount} vertices</span>
         <span className="w-px h-3 bg-neutral-200" />
         <span>{allData.length} paths</span>
-        {simplified && (
+        {hasCurves && <><span className="w-px h-3 bg-neutral-200" /><span>has curves</span></>}
+        {simplifyResult && (
           <>
             <span className="w-px h-3 bg-neutral-200" />
-            <span className="text-green-600 font-medium">✓ Simplified</span>
+            <span className="text-green-600 font-medium">
+              −{simplifyResult.removed} pts ({simplifyResult.bytesBefore}→{simplifyResult.bytesAfter}B)
+            </span>
+          </>
+        )}
+        {noPolyline && (
+          <>
+            <span className="w-px h-3 bg-neutral-200" />
+            <span className="text-amber-500">no polyline paths to simplify</span>
           </>
         )}
       </div>

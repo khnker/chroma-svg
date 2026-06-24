@@ -133,14 +133,49 @@ function pointsToPath(points: Point[]): string {
   return d
 }
 
-export function simplifySvg(svgRaw: string, epsilon = 1): string {
-  const pathRe = /<path\s+([^>]*?)d\s*=\s*"([^"]*)"([^>]*?)>/g
-  return svgRaw.replace(pathRe, (_match, before, d, after) => {
+function hasCurveCommands(d: string): boolean {
+  return /[CSQTAcsqta]/.test(d)
+}
+
+function pointsAttrToPoints(attr: string): Point[] {
+  const numRe = /-?\d+(?:\.\d+)?(?:e[+-]?\d+)?/g
+  const nums = [...attr.matchAll(numRe)].map(m => parseFloat(m[0]))
+  const pts: Point[] = []
+  for (let i = 0; i + 1 < nums.length; i += 2) {
+    pts.push({ x: nums[i], y: nums[i + 1] })
+  }
+  return pts
+}
+
+function pointsToAttr(points: Point[]): string {
+  return points.map(p => `${+p.x.toFixed(2)},${+p.y.toFixed(2)}`).join(' ')
+}
+
+export function simplifySvg(svgRaw: string, epsilon = 1.5): string {
+  let result = svgRaw
+
+  // 1) Simplify <path> — only polyline-like (no curves)
+  const pathRe = /<path\s+([^>]*?)d\s*=\s*"([^"]*)"([^>]*?)>/gi
+  result = result.replace(pathRe, (_match, before, d, after) => {
+    if (hasCurveCommands(d)) return _match
     const pts = extractPathPoints(d)
     if (pts.length < 3) return _match
     const simplified = rdpSimplify(pts, epsilon)
+    if (simplified.length === pts.length) return _match
     return `<path ${before}d="${pointsToPath(simplified)}"${after}>`
   })
+
+  // 2) Simplify <polygon> and <polyline>
+  const polyRe = /<(polygon|polyline)\s+([^>]*?)points\s*=\s*"([^"]*)"([^>]*?)>/gi
+  result = result.replace(polyRe, (_match, tag, before, points, after) => {
+    const pts = pointsAttrToPoints(points)
+    if (pts.length < 3) return _match
+    const simplified = rdpSimplify(pts, epsilon)
+    if (simplified.length === pts.length) return _match
+    return `<${tag} ${before}points="${pointsToAttr(simplified)}"${after}>`
+  })
+
+  return result
 }
 
 export interface PathPointsResult {
