@@ -40,7 +40,7 @@ export function SvgTabBar({ svgs, activeId, onSelect, onClose }: SvgTabBarProps)
             </button>
             <button
               onClick={(e) => { e.stopPropagation(); onClose(svg.id) }}
-              className={`absolute top-0.5 right-0.5 w-4 h-4 flex items-center justify-center rounded-full text-[8px] text-white transition-colors shadow-sm opacity-80 hover:opacity-100
+              className={`absolute top-0.5 right-0.5 z-20 w-4 h-4 flex items-center justify-center rounded-full text-[8px] text-white transition-colors shadow-sm opacity-80 hover:opacity-100
                 ${isActive ? 'bg-primary-500 hover:bg-primary-600' : 'bg-neutral-400 hover:bg-red-500'}`}
             >
               ✕
