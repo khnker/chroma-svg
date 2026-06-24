@@ -240,125 +240,114 @@ export default function App() {
         {hasSvgs && (
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-x-6 gap-y-6">
 
-            {/* ── ROW 1: Unified top bar (5 cols) ── */}
+            {/* ── ROW 1: Top bar (5 cols) ── */}
             <div className="lg:col-span-5">
-              <div className="flex flex-col gap-2 bg-white rounded-xl border border-neutral-200 shadow-sm px-3 sm:px-4 py-2">
+              <div className="flex items-center gap-2 bg-white rounded-xl border border-neutral-200 shadow-sm px-3 sm:px-4 py-3">
 
-                <div className="flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-2 shrink-0">
-                    <Logo size={22} />
-                    <div className="leading-tight hidden sm:block">
-                      <h1 className="text-xs font-semibold text-neutral-900">Chroma</h1>
-                      <p className="text-[9px] text-neutral-400 leading-none">SVG Color Studio</p>
-                    </div>
-                  </div>
+                <div className="flex items-center gap-2 flex-1 min-w-0 overflow-x-auto">
+                  <div className="shrink-0"><Logo size={20} /></div>
 
-                  <div className="flex items-center gap-1.5 overflow-x-auto" role="group" aria-label="Toolbar">
-                    <div className="flex items-center gap-1 rounded-lg border border-neutral-200 bg-white p-0.5 shadow-sm shrink-0">
-                      {(['checker', 'white', 'black'] as const).map(m => (
-                        <Tooltip key={m} content={m === 'checker' ? 'Transparent background' : m === 'white' ? 'White background' : 'Black background'}>
-                          <button
-                            onClick={() => setBgMode(m)}
-                            className={`h-7 w-7 rounded-md text-[9px] font-bold flex items-center justify-center transition-all
-                              ${bgMode === m
-                                ? 'bg-primary-500 text-white shadow-sm'
-                                : 'text-neutral-500 hover:text-neutral-700'}`}
-                            style={m === 'checker' && bgMode !== m ? { background: 'repeating-conic-gradient(#ccc 0% 25%, #fff 0% 50%) 50% / 6px 6px' } : {}}
-                          >
-                            {m === 'checker' ? 'T' : m === 'white' ? 'W' : 'B'}
-                          </button>
-                        </Tooltip>
-                      ))}
-                    </div>
-
-                    <div className="flex rounded-lg border border-neutral-200 bg-white p-0.5 shadow-sm shrink-0">
-                      {(['svg', 'theme'] as ViewTab[]).map((vt) => (
-                        <button
-                          key={vt}
-                          onClick={() => setViewTab(vt)}
-                          className={`h-7 px-2 text-[11px] font-medium rounded-md transition-all whitespace-nowrap
-                            ${viewTab === vt
-                              ? 'bg-primary-500 text-white shadow-sm'
-                              : 'text-neutral-500 hover:text-neutral-700'}`}
-                        >
-                          {vt === 'svg' ? 'SVG' : 'Theme'}
-                        </button>
-                      ))}
-                    </div>
-
-                    <Tooltip content="Export recolored SVG">
-                      <button
-                        onClick={() => setExportOpen(true)}
-                        className="h-7 px-2 text-[11px] font-medium text-white bg-accent-500 hover:bg-accent-600 rounded-lg transition-all active:scale-95 shadow-sm shrink-0"
-                      >
-                        Export
-                      </button>
-                    </Tooltip>
-
-                    <div className="w-px h-5 bg-neutral-200 shrink-0" />
-
-                    <Tooltip content="Add another SVG file">
-                      <button
-                        onClick={() => document.getElementById('svg-file-input')?.click()}
-                        className="h-7 px-2.5 flex items-center gap-1 text-[11px] font-semibold text-white bg-accent-500 hover:bg-accent-600 rounded-lg transition-all active:scale-95 shadow-sm shrink-0"
-                      >
-                        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-                        </svg>
-                        <span className="hidden sm:inline">Add</span>
-                      </button>
-                    </Tooltip>
-
-                    <Tooltip content="Help (?)">
-                      <button
-                        onClick={() => setHelpOpen(true)}
-                        className="h-7 w-7 flex items-center justify-center text-xs font-bold text-neutral-500 bg-neutral-100 hover:bg-neutral-200 rounded-lg transition-all shrink-0 active:scale-95"
-                      >
-                        ?
-                      </button>
-                    </Tooltip>
-
-                    <button
-                      onClick={() => setSidebarOpen(!sidebarOpen)}
-                      className="h-7 w-7 flex items-center justify-center text-neutral-500 bg-neutral-100 hover:bg-neutral-200 rounded-lg transition-all lg:hidden shrink-0 active:scale-95"
-                    >
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d={sidebarOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'} />
-                      </svg>
-                    </button>
-                  </div>
+                  <SvgTabBar
+                    svgs={svgs.map(s => ({ id: s.id, fileName: s.fileName, raw: s.raw }))}
+                    activeId={activeSvg?.id ?? null}
+                    onSelect={setActive}
+                    onClose={removeSvg}
+                  />
                 </div>
 
-                <div className="flex items-center gap-2 overflow-x-auto">
-                  <div className="flex rounded-lg border border-neutral-200 bg-white p-0.5 shadow-sm shrink-0">
-                    {(['palettes', 'previews'] as Tab[]).map((t) => (
+                <div className="flex items-center gap-1 shrink-0">
+                  <div className="flex items-center gap-1 rounded-lg border border-neutral-200 bg-white p-0.5 shadow-sm">
+                    {(['checker', 'white', 'black'] as const).map(m => (
+                      <Tooltip key={m} content={m === 'checker' ? 'Transparent' : m === 'white' ? 'White' : 'Black'}>
+                        <button
+                          onClick={() => setBgMode(m)}
+                          className={`h-6 w-6 rounded-md text-[8px] font-bold flex items-center justify-center transition-all
+                            ${bgMode === m
+                              ? 'bg-primary-500 text-white shadow-sm'
+                              : 'text-neutral-500 hover:text-neutral-700'}`}
+                          style={m === 'checker' && bgMode !== m ? { background: 'repeating-conic-gradient(#ccc 0% 25%, #fff 0% 50%) 50% / 6px 6px' } : {}}
+                        >
+                          {m === 'checker' ? 'T' : m === 'white' ? 'W' : 'B'}
+                        </button>
+                      </Tooltip>
+                    ))}
+                  </div>
+
+                  <div className="flex rounded-lg border border-neutral-200 bg-white p-0.5 shadow-sm">
+                    {(['svg', 'theme'] as ViewTab[]).map((vt) => (
                       <button
-                        key={t}
-                        onClick={() => setTab(t)}
-                        className={`h-7 px-2.5 text-[11px] font-medium rounded-md transition-all whitespace-nowrap flex items-center gap-1
-                          ${tab === t
+                        key={vt}
+                        onClick={() => setViewTab(vt)}
+                        className={`h-6 px-2 text-[10px] font-medium rounded-md transition-all whitespace-nowrap
+                          ${viewTab === vt
                             ? 'bg-primary-500 text-white shadow-sm'
                             : 'text-neutral-500 hover:text-neutral-700'}`}
                       >
-                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d={t === 'palettes'
-                            ? 'M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4'
-                            : 'M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7'} />
-                        </svg>
-                        {t === 'palettes' ? 'Palettes' : 'Previews'}
+                        {vt === 'svg' ? 'SVG' : 'Theme'}
                       </button>
                     ))}
                   </div>
 
-                  {svgs.length > 1 && (
-                    <SvgTabBar
-                      svgs={svgs.map(s => ({ id: s.id, fileName: s.fileName, raw: s.raw }))}
-                      activeId={activeSvg?.id ?? null}
-                      onSelect={setActive}
-                      onClose={removeSvg}
-                    />
-                  )}
+                  <div className="flex rounded-lg border border-neutral-200 bg-white p-0.5 shadow-sm">
+                    {(['palettes', 'previews'] as Tab[]).map((t) => (
+                      <button
+                        key={t}
+                        onClick={() => setTab(t)}
+                        className={`h-6 px-2 text-[10px] font-medium rounded-md transition-all whitespace-nowrap flex items-center gap-1
+                          ${tab === t
+                            ? 'bg-primary-500 text-white shadow-sm'
+                            : 'text-neutral-500 hover:text-neutral-700'}`}
+                      >
+                        <svg className="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d={t === 'palettes'
+                            ? 'M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4'
+                            : 'M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7'} />
+                        </svg>
+                        {t === 'palettes' ? 'P' : 'Pr'}
+                      </button>
+                    ))}
+                  </div>
+
+                  <Tooltip content="Export recolored SVG">
+                    <button
+                      onClick={() => setExportOpen(true)}
+                      className="h-6 px-2 text-[10px] font-medium text-white bg-accent-500 hover:bg-accent-600 rounded-lg transition-all active:scale-95 shadow-sm"
+                    >
+                      Export
+                    </button>
+                  </Tooltip>
+
+                  <Tooltip content="Add another SVG file">
+                    <button
+                      onClick={() => document.getElementById('svg-file-input')?.click()}
+                      className="h-6 px-2 flex items-center gap-0.5 text-[10px] font-semibold text-white bg-accent-600 hover:bg-accent-700 rounded-lg transition-all active:scale-95 shadow-sm"
+                    >
+                      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                      </svg>
+                      Add
+                    </button>
+                  </Tooltip>
+
+                  <Tooltip content="Help (?)">
+                    <button
+                      onClick={() => setHelpOpen(true)}
+                      className="h-6 w-6 flex items-center justify-center text-[10px] font-bold text-neutral-500 bg-neutral-100 hover:bg-neutral-200 rounded-lg transition-all active:scale-95"
+                    >
+                      ?
+                    </button>
+                  </Tooltip>
+
+                  <button
+                    onClick={() => setSidebarOpen(!sidebarOpen)}
+                    className="h-6 w-6 flex items-center justify-center text-neutral-500 bg-neutral-100 hover:bg-neutral-200 rounded-lg transition-all lg:hidden active:scale-95"
+                  >
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d={sidebarOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'} />
+                    </svg>
+                  </button>
                 </div>
+
               </div>
             </div>
 
