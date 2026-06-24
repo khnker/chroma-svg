@@ -1,5 +1,5 @@
-import { useState, useMemo } from 'react'
-import { getPathPoints, findCloseVertices, simplifySvg, type VertexIssue } from '../lib/svg-path-utils'
+import { useState, useMemo, useCallback } from 'react'
+import { getPathPoints, findCloseVertices, simplifySvg, patchCloseVertices, analyzeSvg, type VertexIssue } from '../lib/svg-path-utils'
 
 interface PathToolsProps {
   svgRaw: string
@@ -11,15 +11,14 @@ interface PathToolsProps {
 export function PathTools({ svgRaw, onSimplify, showVertices, onToggleVertices }: PathToolsProps) {
   const [issues, setIssues] = useState<VertexIssue[]>([])
   const [isScanning, setIsScanning] = useState(false)
-  const [simplified, setSimplified] = useState(false)
   const [simplifyResult, setSimplifyResult] = useState<{ removed: number; bytesBefore: number; bytesAfter: number } | null>(null)
-  const [noPolyline, setNoPolyline] = useState(false)
+  const [patched, setPatched] = useState(false)
 
+  const analysis = useMemo(() => analyzeSvg(svgRaw), [svgRaw])
   const allData = useMemo(() => getPathPoints(svgRaw), [svgRaw])
   const vertexCount = useMemo(() => allData.reduce((s, p) => s + p.points.length, 0), [allData])
-  const hasCurves = useMemo(() => /[CSQTAcsqta]/.test(svgRaw), [svgRaw])
 
-  const handleSimplify = () => {
+  const handleSimplify = useCallback(() => {
     const result = simplifySvg(svgRaw, 1.5)
     if (result !== svgRaw) {
       const before = new Blob([svgRaw]).size
@@ -27,31 +26,36 @@ export function PathTools({ svgRaw, onSimplify, showVertices, onToggleVertices }
       const ptsBefore = vertexCount
       const ptsAfter = getPathPoints(result).reduce((s, p) => s + p.points.length, 0)
       onSimplify(result)
-      setSimplified(true)
       setIssues([])
       setSimplifyResult({ removed: ptsBefore - ptsAfter, bytesBefore: before, bytesAfter: after })
-      setNoPolyline(false)
-    } else if (!hasCurves) {
-      setNoPolyline(true)
     }
-  }
+  }, [svgRaw, vertexCount, onSimplify])
 
-  const handleScan = () => {
+  const handleScan = useCallback(() => {
     setIsScanning(true)
     const found = findCloseVertices(svgRaw, 2)
     setIssues(found)
     setIsScanning(false)
-  }
+  }, [svgRaw])
+
+  const handlePatch = useCallback(() => {
+    const result = patchCloseVertices(svgRaw, issues)
+    if (result !== svgRaw) {
+      onSimplify(result)
+      setIssues([])
+      setPatched(true)
+    }
+  }, [svgRaw, issues, onSimplify])
 
   return (
     <div className="bg-white rounded-xl border border-neutral-200 shadow-sm">
       <div className="flex items-center gap-1.5 p-2 border-b border-neutral-100 overflow-x-auto">
         <button
           onClick={handleSimplify}
-          disabled={simplified}
+          disabled={simplifyResult !== null}
           className="shrink-0 h-7 px-2.5 text-[10px] font-medium rounded-lg transition-all border disabled:opacity-40 disabled:cursor-not-allowed
             text-primary-600 border-primary-200 bg-primary-50 hover:bg-primary-100 active:scale-95"
-          title="Simplificar paths con Ramer-Douglas-Peucker: elimina vértices redundantes en líneas rectas. Solo afecta paths polilineares (sin curvas C/Q/A). Los paths con curvas se dejan intactos."
+          title="Simplificar paths con Ramer-Douglas-Peucker: elimina vértices redundantes en líneas rectas. Solo afecta paths polilineares (sin curvas C/Q/A)."
         >
           ✂ Simplify
         </button>
@@ -61,7 +65,7 @@ export function PathTools({ svgRaw, onSimplify, showVertices, onToggleVertices }
             ${showVertices
               ? 'bg-primary-500 text-white border-primary-400 shadow-sm'
               : 'text-neutral-600 border-neutral-200 bg-white hover:bg-neutral-50'}`}
-          title="Mostrar puntos de control (vértices) de cada path superpuestos en el SVG. Los puntos rojos indican vértices problemáticos detectados."
+          title="Mostrar puntos de control (vértices) de cada path superpuestos en el SVG. Puntos rojos si hay vértices problemáticos."
         >
           ◎ Vertices {showVertices ? 'ON' : 'OFF'}
         </button>
@@ -71,14 +75,25 @@ export function PathTools({ svgRaw, onSimplify, showVertices, onToggleVertices }
           disabled={isScanning}
           className="shrink-0 h-7 px-2.5 text-[10px] font-medium rounded-lg transition-all border active:scale-95
             text-amber-600 border-amber-200 bg-amber-50 hover:bg-amber-100 disabled:opacity-40 disabled:cursor-not-allowed"
-          title="Detectar vértices separados por menos de 2px que generan segmentos invisiblemente pequeños o colineales. Útil para encontrar autotrazao o errores de exportación."
+          title="Detectar vértices separados por menos de 2px: segmentos invisiblemente pequeños o colineales. Útil para autotrazao o errores de exportación."
         >
-          ⚡ Detect issues
+          ⚡ Detect
         </button>
         {issues.length > 0 && (
-          <span className="shrink-0 text-[10px] text-amber-600 font-medium ml-0.5">
-            {issues.length}
-          </span>
+          <>
+            <button
+              onClick={handlePatch}
+              disabled={patched}
+              className="shrink-0 h-7 px-2.5 text-[10px] font-medium rounded-lg transition-all border active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed
+                text-green-600 border-green-200 bg-green-50 hover:bg-green-100"
+              title="Eliminar automáticamente los vértices problemáticos detectados aplicando simplificación local en los paths afectados."
+            >
+              ✓ Patch
+            </button>
+            <span className="shrink-0 text-[10px] text-amber-600 font-medium">
+              {issues.length}
+            </span>
+          </>
         )}
       </div>
 
@@ -90,30 +105,25 @@ export function PathTools({ svgRaw, onSimplify, showVertices, onToggleVertices }
               P{iss.pathIndex + 1}·V{iss.index}: ({iss.point.x.toFixed(0)},{iss.point.y.toFixed(0)})→({iss.nextPoint.x.toFixed(0)},{iss.nextPoint.y.toFixed(0)}) — {iss.distance.toFixed(1)}px
             </div>
           ))}
-          {issues.length > 20 && (
-            <div className="text-amber-500 italic">…{issues.length - 20} more</div>
-          )}
+          {issues.length > 20 && <div className="text-amber-500 italic">…{issues.length - 20} more</div>}
         </div>
       )}
 
       <div className="px-3 py-1.5 flex items-center gap-3 text-[10px] text-neutral-400">
-        <span>{vertexCount} vertices</span>
-        <span className="w-px h-3 bg-neutral-200" />
-        <span>{allData.length} paths</span>
-        {hasCurves && <><span className="w-px h-3 bg-neutral-200" /><span>has curves</span></>}
-        {simplifyResult && (
-          <>
-            <span className="w-px h-3 bg-neutral-200" />
-            <span className="text-green-600 font-medium">
-              −{simplifyResult.removed} pts ({simplifyResult.bytesBefore}→{simplifyResult.bytesAfter}B)
-            </span>
-          </>
+        {vertexCount > 0 ? (
+          <span>{vertexCount} vertices</span>
+        ) : (
+          <span className="text-neutral-500 italic">no paths with vertices</span>
         )}
-        {noPolyline && (
-          <>
-            <span className="w-px h-3 bg-neutral-200" />
-            <span className="text-amber-500">no polyline paths to simplify</span>
-          </>
+        {analysis.pathCount > 0 && <><span className="w-px h-3 bg-neutral-200" /><span>{analysis.pathCount} paths</span></>}
+        {analysis.shapeCount > 0 && <><span className="w-px h-3 bg-neutral-200" /><span>{analysis.shapeCount} shapes</span></>}
+        {analysis.hasCurves && <><span className="w-px h-3 bg-neutral-200" /><span>has curves</span></>}
+        {simplifyResult && (
+          <><span className="w-px h-3 bg-neutral-200" /><span className="text-green-600 font-medium">−{simplifyResult.removed} pts ({simplifyResult.bytesBefore}→{simplifyResult.bytesAfter}B)</span></>
+        )}
+        {patched && <><span className="w-px h-3 bg-neutral-200" /><span className="text-green-600 font-medium">✓ Patched</span></>}
+        {!analysis.hasCurves && vertexCount === 0 && analysis.shapeCount > 0 && (
+          <span className="text-amber-500 italic">only basic shapes — no paths to simplify</span>
         )}
       </div>
     </div>
